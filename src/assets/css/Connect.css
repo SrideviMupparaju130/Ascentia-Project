@@ -1,0 +1,78 @@
+body, html {
+    height: 100%;
+    margin: 0;
+    font-family: 'Orbitron', sans-serif;
+    background: #121212; /* Dark background for cyberpunk effect */
+    color: #fff;
+}
+
+.connect-container {
+    background: rgba(0, 0, 0, 0.8); /* Semi-transparent background */
+    padding: 10px;
+    border-radius: 15px;
+    box-shadow: 0 0 20px rgba(255, 0, 255, 0.8); /* Neon purple glow */
+    max-width: 800px;
+    width: 100%;
+    position: relative;
+    z-index: 10;
+    top: 30px;
+}
+
+.connect-container h1, .connect-container h2 {
+    margin-bottom: 15px;
+    color: #00ffff; /* Neon cyan color */
+    text-align: center;
+}
+
+.search-bar input {
+    flex: 1;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #00ffcc;
+    border-radius: 4px;
+    background-color: #222; /* Dark background for input fields */
+    color: #00ffcc;
+}
+
+.search-bar button {
+    padding: 10px;
+    background-color: #ff00ff; /* Neon purple button */
+    color: white;
+    border: none;
+    cursor: pointer;
+    margin-left: 10px;
+    border-radius: 4px;
+    transition: background-color 0.3s, box-shadow 0.3s;
+    box-shadow: 0 0 10px rgba(255, 0, 255, 0.5); /* Glow effect */
+    position: relative;
+    top: 7px;
+}
+
+.search-bar button:hover {
+    background-color: #00ffcc; /* Neon cyan on hover */
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.8); /* Stronger glow on hover */
+}
+
+.friend, .leaderboard {
+    background-color: rgba(255, 255, 255, 0.1); /* Transparent background */
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.6); /* Neon cyan glow */
+    margin-top: 20px;
+}
+
+.friend button {
+    background-color: #ff00ff; /* Neon purple button */
+    border: none;
+    color: #fff;
+    padding: 10px;
+    cursor: pointer;
+    border-radius: 4px;
+    box-shadow: 0 0 10px rgba(255, 0, 255, 0.6); /* Neon glow */
+    transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+.friend button:hover {
+    background-color: #00ffcc; /* Neon cyan on hover */
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.8); /* Stronger glow on hover */
+}

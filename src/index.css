@@ -1,0 +1,18 @@
+body, html {
+  height: 100%;
+  margin: 0;
+  font-family: 'Orbitron', sans-serif;
+  background: #121212; /* Dark background for cyberpunk effect */
+  color: #fff;
+}
+
+.background {
+  background-image: url('./assets/images/background.png'); /* Replace with your cyberpunk-themed image URL */
+  background-size: cover;
+  background-position: center;
+  height: 100vh; /* Full viewport height */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}

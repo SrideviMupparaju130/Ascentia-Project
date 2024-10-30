@@ -1,0 +1,99 @@
+body, html {
+    height: 100%;
+    margin: 0;
+    font-family: 'Orbitron', sans-serif;
+    background: #121212; /* Dark background for cyberpunk effect */
+    color: #fff;
+}
+
+.login-container {
+    background: rgba(0, 0, 0, 0.8); /* Semi-transparent background */
+    padding: 15px; /* Reduced padding */
+    border-radius: 15px;
+    box-shadow: 0 0 20px rgba(255, 0, 255, 0.8); /* Neon purple glow */
+    max-width: 350px; /* Reduced width */
+    width: 100%;
+    position: relative;
+    z-index: 10;
+    margin-top: 40px; /* Add margin to move it away from the navbar */
+}
+
+.login-container h2 {
+    margin-bottom: 15px;
+    color: #00ffff; /* Neon cyan color */
+    text-align: center;
+    font-size: 1.5rem; /* Smaller font size for the header */
+}
+
+.login-container .form-control {
+    border-radius: 5px;
+    border: 1px solid #ff00ff; /* Neon purple border */
+    background-color: #222; /* Dark background for input fields */
+    color: #fff;
+    font-size: 0.7rem; /* Smaller font size for form fields */
+}
+
+.login-container .form-control::placeholder {
+    color: #aaa;
+}
+
+.login-container .btn {
+    border-radius: 5px;
+    background-color: #ff00ff; /* Neon purple button */
+    color: #fff;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 0 10px rgba(255, 0, 255, 0.8); /* Neon purple glow */
+}
+
+.login-container .btn:hover {
+    background-color: #cc00cc; /* Darker neon purple on hover */
+    box-shadow: 0 0 15px rgba(255, 0, 255, 1); /* Stronger glow on hover */
+}
+
+.login-container .form-check {
+    margin-bottom: 20px; /* Adjust the space between checkbox and button */
+}
+
+.login-container .form-check-label {
+    font-size: 0.8em; /* Smaller font size for checkbox label */
+    color: #fff; /* Ensure checkbox label is visible */
+}
+
+.forgot-password-link {
+    color: #00ffff; /* Neon cyan color */
+    font-size: 0.875rem; /* Smaller font size */
+    margin-top: 10px;
+    text-align: right;
+    display: inline-block;
+}
+
+.forgot-password-link:hover {
+    color: #ff00ff; /* Neon purple on hover */
+    text-shadow: 0 0 5px rgba(255, 0, 255, 0.8); /* Neon glow on hover */
+    text-decoration: none;
+}
+
+.btn-google {
+    background-color: #ffffff !important; /* Set the background to white */
+    color: #000 !important; /* Set the text color to black */
+    border: 1px solid #ddd; /* Add a light border */
+    font-weight: bold;
+    padding: 10px 15px; /* Adjust padding */
+    border-radius: 5px; /* Round the edges */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px; /* Space between Google icon and text */
+    transition: background-color 0.3s ease, box-shadow 0.3s ease; /* Smooth transition */
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.8); /* Subtle glow */
+}
+
+.btn-google:hover {
+    background-color: #f0f0f0; /* Slightly darker on hover */
+    box-shadow: 0 0 15px rgba(255, 255, 255, 1); /* Stronger glow on hover */
+}
+
+.btn-google img {
+    width: 20px; /* Adjust icon size */
+    height: 20px;
+}

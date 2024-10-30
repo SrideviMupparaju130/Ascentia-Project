@@ -1,0 +1,298 @@
+/* General Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Orbitron', sans-serif;
+}
+
+body, html {
+    height: 100%;
+    margin: 0;
+    font-family: 'Orbitron', sans-serif;
+    background: #121212; /* Dark background for cyberpunk effect */
+    color: #fff;
+}
+
+.task-container {
+    background: rgba(0, 0, 0, 0.8); /* Semi-transparent background */
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 0 20px rgba(255, 0, 255, 0.8); /* Neon purple glow */
+    max-width: 1200px;
+    width: 100%;
+    position: relative;
+    z-index: 10;
+}
+
+.task-container h2 {
+    color: #00ffff; /* Neon cyan color */
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 2rem;
+}
+
+/* Task Cards Styling */
+.task-cards-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.task-card {
+    background: rgba(0, 0, 0, 0.8); /* Semi-transparent background */
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(255, 0, 255, 0.8); /* Neon purple glow */
+    width: calc(20% - 20px); /* Adjust width to fit 5 cards */
+    min-height: 250px; /* Increased height to fit the image */
+    padding: 0;
+    overflow: hidden;
+    color: #fff;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.task-card:hover {
+    transform: translateY(-10px); /* Lift on hover */
+    box-shadow: 0 0 20px rgba(255, 0, 255, 1); /* Stronger glow on hover */
+}
+
+.task-card img {
+    width: 100%;
+    height: 150px; /* Adjust the height of the image */
+    object-fit: cover; /* Ensures the image covers the width and height without distortion */
+}
+
+.task-card h5 {
+    color: #00ffff; /* Neon cyan color */
+    margin-top: 10px;
+    margin-bottom: 10px;
+    font-size: 1.25rem;
+    padding: 0 10px;
+}
+
+.task-card p {
+    color: #aaa; /* Lighter color for task description */
+    padding: 0 10px 10px;
+    font-size: x-small;
+}
+
+.create-task-btn {
+    position: fixed;
+    bottom: 20px; /* Adjust this value to position the button */
+    right: 20px; /* Adjust this value to position the button */
+    width: 50px; /* Width of the button */
+    height: 50px; /* Height of the button */
+    border: none; /* Remove border */
+    border-radius: 50%; /* Make the button circular */
+    background-color: rgba(255, 0, 255, 0.8); /* Neon cyan background */
+    color: #fff; /* Text color */
+    font-size: 24px; /* Font size */
+    font-weight: bold; /* Font weight */
+    box-shadow: 0 0 10px rgba(255, 0, 255, 0.8); /* Neon glow */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: background-color 0.3s ease, transform 0.3s ease; /* Transition for hover effects */
+}
+
+.create-task-btn:hover {
+    background-color: rgba(0, 255, 255, 0.8); /* Lighter background on hover */
+    transform: scale(1.1); /* Slightly enlarge on hover */
+}
+
+.task-form {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: rgba(0, 0, 0, 0.9); /* Dark background for the form */
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(255, 0, 255, 0.8); /* Neon glow */
+    z-index: 20; /* Ensure it's above other elements */
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    color: #00ffff; /* Neon cyan */
+}
+
+input[type="text"],
+input[type="date"],
+select {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    border-radius: 5px;
+    border: 1px solid #00ffff; /* Neon cyan border */
+    background: rgba(255, 255, 255, 0.1); /* Semi-transparent background */
+    color: #fff;
+}
+
+.btn {
+    background-color: #00ffff; /* Neon cyan button */
+    color: #000; /* Black text */
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.btn:hover {
+    background-color: #00cccc; /* Darker cyan on hover */
+}
+
+.close-btn {
+    background: transparent;
+    border: none;
+    font-size: 24px; /* Adjust size as needed */
+    cursor: pointer;
+    position: absolute; /* Positioning relative to the form */
+    top: 10px; /* Adjust top position */
+    right: 15px; /* Adjust right position */
+    color: #fff;
+}
+
+/* Apply blur to the task-container when popup is visible */
+.blur-background .task-container {
+    filter: blur(5px);
+    transition: filter 0.3s ease;
+}
+
+/* Popup Overlay */
+.popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.7); /* Dark semi-transparent background */
+    display: flex;
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    z-index: 1000; /* Ensure it's above other content */
+}
+
+/* Popup Content */
+.popup-content {
+    background: rgba(0, 0, 0, 0.9); /* Dark background for the popup */
+    padding: 20px;
+    border-radius: 10px; /* Rounded corners */
+    box-shadow: 0 0 20px rgba(255, 0, 255, 0.8); /* Neon glow */
+    width: 90%; /* Responsive width */
+    max-width: 500px; /* Maximum width for larger screens */
+    color: #fff; /* White text color for better readability */
+    position: relative; /* For positioning the close button */
+}
+
+/* Close Button */
+.popup-close-btn {
+    background: transparent;
+    border: none;
+    font-size: 24px; /* Adjust size as needed */
+    cursor: pointer;
+    position: absolute; /* Positioning relative to the popup */
+    top: 10px; /* Adjust top position */
+    right: 15px; /* Adjust right position */
+    color: #00ffff; /* Neon cyan color */
+}
+
+/* Task List Styling */
+.task-list {
+    list-style-type: none; /* Remove default list styling */
+    padding: 0; /* Remove default padding */
+}
+
+.task-list li {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    color: #fff;
+    transition: background-color 0.3s ease; /* Remove transitions on text */
+}
+
+/* Checkbox Styles */
+.task-label {
+    position: relative;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.task-list input[type="checkbox"] {
+    opacity: 0;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 20px;
+    height: 20px;
+    margin: 0;
+    cursor: pointer;
+    z-index: 1;
+}
+
+.task-list input[type="checkbox"] + .custom-checkbox {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #00ffff;
+    border-radius: 3px;
+    display: inline-block;
+    margin-right: 10px;
+    background-color: transparent;
+    position: relative;
+    z-index: 0;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.task-list input[type="checkbox"]:checked + .custom-checkbox {
+    background-color: #00ffff;
+    border-color: #00ffff;
+}
+
+.task-list input[type="checkbox"]:checked + .custom-checkbox::after {
+    content: '';
+    position: absolute;
+    width: 4px;
+    height: 10px;
+    border: solid #000; /* Black checkmark */
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+    top: 2px;
+    left: 8px;
+}
+
+.task-list input[type="checkbox"] + .custom-checkbox:hover {
+    border-color: #00cccc;
+}
+
+.task-list .completed .task-name {
+    text-decoration: line-through;
+    color: #aaa;
+}
+
+
+.task-name {
+    cursor: pointer;
+    transition: none; /* Ensure no transition on text */
+}
+
+.error-message {
+    color: rgba(255, 0, 255, 0.8); /* Error message color */
+}
+.pomodoro-btn {
+    background-color: rgba(255, 0, 255, 0.8); 
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 10px;
+}
+
+.pomodoro-btn:hover {
+    background-color: #32cd32; /* Medium green on hover */
+}
