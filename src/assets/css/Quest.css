@@ -3,7 +3,7 @@
   flex-direction: column;
   gap: 10px;
   width: 100%;
-  max-width: 800px;
+  min-width: 800px;
   margin: 0 auto;
   padding-top: 50px;
   height: calc(100vh - 200px);
@@ -20,20 +20,12 @@
   height: 70px;
   color: black; /* Main text color */
   font-weight: bold;
-  background-color: #f5f5f5; /* Light background for contrast */
   position: relative;
   overflow: hidden;
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
   transition: box-shadow 0.3s ease-in-out;
-}
-
-/* Pink neon glow effect for black text */
-.quest-card span {
-  color: black;
-  text-shadow: 
-    0 0 5px rgba(255, 20, 147, 0.8),  /* Inner pink glow */
-    0 0 10px rgba(255, 20, 147, 0.6), /* Mid pink glow */
-    0 0 15px rgba(255, 20, 147, 0.4); /* Outer pink glow */
+  width: 100%; /* Full width of container */
+  box-sizing: border-box; /* Ensures padding doesn't add to total width */
 }
 
 /* Badge styling */

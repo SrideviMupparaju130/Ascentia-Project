@@ -1,54 +1,29 @@
-import axios from 'axios';
-import PropTypes from 'prop-types';
-import React, { useEffect, useState } from 'react';
-import '../assets/css/Quest.css';
+import React from "react";
+import "../assets/css/Quest.css"; // Make sure to import your CSS
 
-const Quest = ({ userId }) => {
-    const [quests, setQuests] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+const quests = [
+  { id: 1, text: "Complete your profile", xp: 50, theme: "color-theme-1" },
+  { id: 2, text: "Invite a friend", xp: 30, theme: "color-theme-2" },
+  { id: 3, text: "Share your progress", xp: 20, theme: "color-theme-3" },
+  { id: 4, text: "Complete your first task", xp: 40, theme: "color-theme-4" },
+  { id: 5, text: "Reach Level 2", xp: 100, theme: "color-theme-5" },
+];
 
-    useEffect(() => {
-        // Validate userId before making the API call
-        if (!userId) {
-            setError('User ID is required');
-            setLoading(false);
-            return;
-        }
-
-        const fetchQuests = async () => {
-            try {
-                console.log('Fetching quests for userId:', userId); // Log userId
-                const response = await axios.get(`/api/quests/user/${userId}`); // Correct endpoint
-                setQuests(response.data);
-            } catch (err) {
-                setError(err.message);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchQuests();
-    }, [userId]);
-
-    if (loading) return <p>Loading quests...</p>;
-    if (error) return <p>Error: {error}</p>;
-
-    return (
-        <div className="quest-list">
-            {quests.map(quest => (
-                <div key={quest._id} className="quest-box">
-                    <h3>{quest.name}</h3>
-                    <p>XP: {quest.xp}</p>
-                    <p>Status: {quest.completed ? 'Completed' : 'Not Completed'}</p>
-                </div>
+function Quest() {
+  return (
+    <div className="background">
+        <div className="Quest">
+        <div className="quests-container">
+            {quests.map((quest) => (
+            <div key={quest.id} className={`quest-card ${quest.theme}`}>
+                <span>{quest.text}</span>
+                <div className="xp-badge">{quest.xp} XP</div>
+            </div>
             ))}
         </div>
-    );
-};
-
-Quest.propTypes = { // Ensure the component name matches
-    userId: PropTypes.string.isRequired,
-};
+        </div>
+    </div>
+  );
+}
 
 export default Quest;
