@@ -72,7 +72,7 @@ router.put('/', async (req, res) => {
         // Increment user XP upon quest completion
         const user = await User.findByIdAndUpdate(
             userId,
-            { $inc: { XP: quest.rewardXP } },
+            { $inc: { XP: quest.XP } },
             { new: true }
         );
 
