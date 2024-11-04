@@ -2,12 +2,32 @@ const express = require('express');
 const router = express.Router();
 const { ObjectId } = require('mongodb');
 const Quest = require('../models/Quest');
-const User = require('../models/User'); 
+const User = require('../models/User');
 const cron = require('node-cron');
 const { exec } = require('child_process');
 const authenticate = require('../middleware/authenticate');
 
 router.use(authenticate);
+
+// Function to update user level based on XP
+const updateUserLevel = async (userId, xp) => {
+    let level = 1; // Start from level 1
+
+    // Define level thresholds
+    const levelThresholds = [20, 50, 100, 200];
+
+    // Determine the level based on XP
+    for (let i = 0; i < levelThresholds.length; i++) {
+        if (xp >= levelThresholds[i]) {
+            level = i + 2; // Increment level (Level 2 corresponds to threshold 1)
+        } else {
+            break;
+        }
+    }
+
+    // Update the user's level if it has changed
+    await User.findByIdAndUpdate(userId, { level });
+};
 
 // Schedule task for weekly quest updates
 cron.schedule('0 0 * * 1', () => {  // Run every Monday at midnight
@@ -79,6 +99,9 @@ router.put('/', async (req, res) => {
         if (!user) {
             return res.status(500).json({ message: 'Failed to update user XP.' });
         }
+
+        // Update user level based on the new XP
+        await updateUserLevel(userId, user.XP);
 
         res.json({ message: 'Quest marked as completed and XP added!', quest });
     } catch (error) {
