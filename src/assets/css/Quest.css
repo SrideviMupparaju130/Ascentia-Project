@@ -1,11 +1,10 @@
 .quests-container {
   display: flex;
   flex-direction: column;
-  gap: 10px;
   width: 100%;
-  min-width: 800px;
+  max-width: 1000px;
   margin: 0 auto;
-  padding-top: 50px;
+  padding-top: 30px;
   height: calc(100vh - 200px);
 }
 
@@ -18,14 +17,15 @@
   font-size: 1.3rem;
   text-align: center;
   height: 70px;
-  color: black; /* Main text color */
+  color: black;
   font-weight: bold;
   position: relative;
   overflow: hidden;
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
   transition: box-shadow 0.3s ease-in-out;
-  width: 100%; /* Full width of container */
-  box-sizing: border-box; /* Ensures padding doesn't add to total width */
+  width: 100%;
+  box-sizing: border-box;
+  margin-bottom: 10px;
 }
 
 /* Badge styling */
@@ -48,5 +48,40 @@
 
 /* Hover effect for extra glow */
 .quest-card:hover {
-  box-shadow: 0 0 15px rgba(255, 0, 255, 0.8); /* Neon purple glow */
+  box-shadow: 0 0 15px rgba(255, 0, 255, 0.8);
+}
+
+/* Styling for the checkbox and label */
+.quest-card input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  position: relative;
+  width: 20px;
+  height: 20px;
+  border: 2px solid black;
+  border-radius: 4px;
+  margin-right: 10px;
+  cursor: pointer;
+}
+
+.quest-card input[type="checkbox"]:checked::before {
+  content: "\2713";
+  position: absolute;
+  font-size: 16px;
+  color: black;
+  left: 2px;
+  top: -2px;
+}
+
+/* Align checkbox and text together */
+.quest-card label {
+  display: flex;
+  align-items: center;
+  font-size: 1.3rem;
+  color: black;
+}
+
+/* Header and loading text color */
+h2, p {
+  color: #00ffff;
 }

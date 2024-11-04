@@ -1,67 +1,89 @@
 const express = require('express');
 const router = express.Router();
+const { ObjectId } = require('mongodb');
 const Quest = require('../models/Quest');
-const Task = require('../models/Task');
-const { GoogleGenerativeAI } = require("@google/generative-ai");
-const authenticate = require('../middleware/authenticate'); // Correct import for authentication middleware
+const User = require('../models/User'); 
+const cron = require('node-cron');
+const { exec } = require('child_process');
+const authenticate = require('../middleware/authenticate');
 
-// Create quests for all users who have tasks
-router.post('/generate-all', authenticate, async (req, res) => {
+router.use(authenticate);
+
+// Schedule task for weekly quest updates
+cron.schedule('0 0 * * 1', () => {  // Run every Monday at midnight
+    console.log("Running weekly quest update...");
+    const pythonScriptPath = '/Users/man/Ascentia/scripts/update_quests.py'; // Set the correct path
+
+    exec(`python3 ${pythonScriptPath}`, (error, stdout, stderr) => {
+        if (error) {
+            console.error(`Error executing script: ${error.message}`);
+            return;
+        }
+        if (stderr) {
+            console.error(`Script stderr: ${stderr}`);
+            return;
+        }
+        console.log(`Weekly quest update output: ${stdout}`);
+    });
+});
+
+// Get quests for a specific user
+router.get('/', async (req, res) => {
     try {
-        // Fetch all unique user IDs with tasks
-        const usersWithTasks = await Task.distinct('userId'); // Get unique user IDs
-        
-        for (const userId of usersWithTasks) {
-            // Fetch existing tasks for the user
-            const tasks = await Task.find({ userId });
-            
-            // Prepare prompt based on existing tasks
-            const taskDetails = tasks.map(task => ({
-                name: task.task,
-                difficulty: task.difficulty,
-            }));
+        const userId = req.user.id;
 
-            const prompt = `Based on the following tasks: ${JSON.stringify(taskDetails)}, generate 5 new challenges with associated XP values.`;
-
-            const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_URL);
-            const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-
-            const result = await model.generateContent(prompt);
-            const generatedChallenges = JSON.parse(result.response.text); // Adjust based on actual response structure
-
-            // Map generated challenges to Quest objects
-            const quests = generatedChallenges.map(challenge => {
-                // Set XP based on difficulty
-                let xp = 0;
-                switch (challenge.difficulty) {
-                    case 'easy':
-                        xp = 5;
-                        break;
-                    case 'medium':
-                        xp = 10;
-                        break;
-                    case 'hard':
-                        xp = 20;
-                        break;
-                    default:
-                        xp = 0; // Fallback if difficulty is unknown
-                }
-                // Create and return a new Quest object
-                return new Quest({
-                    name: challenge.name,
-                    xp,
-                    userId: userId, // Ensure userId is passed correctly
-                });
-            });
-
-            // Save all generated quests
-            await Quest.insertMany(quests);
+        if (!ObjectId.isValid(userId)) {
+            return res.status(400).json({ message: 'Invalid user ID format.' });
         }
 
-        res.status(201).json({ message: 'Quests generated for all users with tasks.' });
-    } catch (err) {
-        console.error('Error creating quests:', err); // Log the error for debugging
-        res.status(500).json({ message: 'Error creating quests', error: err.message });
+        const quests = await Quest.find({ userId: new ObjectId(userId) });
+        if (!quests || quests.length === 0) {
+            return res.status(404).json({ message: 'No quests found for this user.' });
+        }
+
+        res.json(quests);
+    } catch (error) {
+        console.error('Error fetching quests:', error);
+        res.status(500).json({ message: 'Failed to retrieve quests due to a server error.' });
+    }
+});
+
+// Put route to mark a quest as complete
+router.put('/', async (req, res) => {
+    try {
+        const { questId } = req.body; // Quest ID is now in the request body
+        const userId = req.user.id;
+
+        if (!ObjectId.isValid(questId) || !ObjectId.isValid(userId)) {
+            return res.status(400).json({ message: 'Invalid ID format.' });
+        }
+
+        // Find and update the quest completion status if it's not already completed
+        const quest = await Quest.findOneAndUpdate(
+            { _id: new ObjectId(questId), userId: new ObjectId(userId), completed: false },
+            { completed: true },
+            { new: true }
+        );
+
+        if (!quest) {
+            return res.status(404).json({ message: 'Quest not found or already completed.' });
+        }
+
+        // Increment user XP upon quest completion
+        const user = await User.findByIdAndUpdate(
+            userId,
+            { $inc: { XP: quest.rewardXP } },
+            { new: true }
+        );
+
+        if (!user) {
+            return res.status(500).json({ message: 'Failed to update user XP.' });
+        }
+
+        res.json({ message: 'Quest marked as completed and XP added!', quest });
+    } catch (error) {
+        console.error('Error marking quest as completed:', error);
+        res.status(500).json({ message: 'Failed to mark quest as completed due to a server error.' });
     }
 });
 

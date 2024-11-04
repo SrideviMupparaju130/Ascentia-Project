@@ -1,15 +1,26 @@
 const mongoose = require('mongoose');
+const { Schema } = mongoose;
 
-const questSchema = new mongoose.Schema({
-  name: { type: String, required: true },
-  xp: { type: Number, required: true },
-  userId: {
-    type: mongoose.Schema.Types.ObjectId,
-    required: true,
-    ref: 'User',
-  },
-  completed: { type: Boolean, default: false },
-  createdAt: { type: Date, default: Date.now },
+const questSchema = new Schema({
+    userId: {
+        type: Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
+    },
+    Challenge: {
+        type: String,
+        required: true
+    },
+    XP: {
+        type: Number,
+        required: true
+    },
+    completed: {
+        type: Boolean,
+        default: false,
+    }
+}, {
+    timestamps: true  // Automatically add createdAt and updatedAt timestamps
 });
 
 module.exports = mongoose.model('Quest', questSchema);
