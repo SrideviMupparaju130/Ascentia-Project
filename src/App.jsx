@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Connect from './pages/Connect';
+import Dashboard from './pages/Dashboard';
 import Login from './pages/Login';
 import Pomodoro from './pages/Pomodoro';
 import Quest from './pages/Quest';
@@ -23,6 +24,7 @@ function App() {
           <Route path="/task" element={<Task />} />
           <Route path="/connect" element={<Connect />} />
           <Route path="/pomodoro" element={<Pomodoro />} />
+          <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/quest" element={<Quest userId={userId} />} /> {/* Pass userId to Quest */}
         </Routes>
       </BrowserRouter>

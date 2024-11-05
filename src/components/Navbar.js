@@ -29,6 +29,9 @@ const Navbar = ({ userName, setUserName }) => {
                                 <span className="nav-link">{userName}</span>
                             </li>
                             <li className="nav-item">
+                                <Link className="nav-link" to="/dashboard">Dashboard</Link>
+                            </li>
+                            <li className="nav-item">
                                 <Link className="nav-link" to="/task">Task</Link>
                             </li>
                             <li className="nav-item">

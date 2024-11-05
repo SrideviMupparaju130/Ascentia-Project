@@ -18,7 +18,7 @@ const userSchema = new mongoose.Schema({
     XP: {
         type: Number,
         default: 0,
-    },
+    }, 
     level: {
         type: Number,
         default: 1,

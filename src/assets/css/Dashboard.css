@@ -1,0 +1,657 @@
+/* Reset and base styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100%;
+    font-family: 'Orbitron', Arial, sans-serif; /* Use a futuristic font like Orbitron */
+    background-color: #000; /* Dark background for a cyberpunk feel */
+}
+
+
+/* Navbar styling */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: rgba(0, 0, 0, 0.8);
+    border-bottom: 3px solid #0ff; /* Neon cyan border for cyberpunk effect */
+    box-shadow: 0 0 20px #0ff, 0 0 20px #f0f; /* Neon glow effect with purple */
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 10;
+}
+
+.navbar .logo img {
+    width: 200px;
+    height: auto;
+    filter: drop-shadow(0 0 10px #0ff); /* Neon effect */
+}
+
+.nav-links {
+    list-style: none;
+    display: flex;
+}
+
+.nav-links li {
+    margin: 0 15px;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: #0ff;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.1rem;
+    text-shadow: 0 0 10px #0ff, 0 0 20px #f0f;
+    transition: color 0.3s;
+}
+
+.nav-links a:hover {
+    color: #f0f;
+}
+
+
+/* Main section and backgrounds */
+.main-section {
+    min-height: 100vh;
+    background: url('../images/dashback.png') no-repeat center center;
+    background-size: cover;
+    position: relative;
+    z-index: 0;
+
+}
+/* New background section */
+.scroll-background {
+    position: absolute;
+    top: 100vh; /* Start below the main section */
+    left: 0;
+    right: 0;
+    height: 60vh; /* Full height of the viewport */
+    background-image: url('../images/dashback2.png'); /* Initial background */
+    background-size: cover;
+    background-position: center 1%; /* Move this up by changing the percentage */
+    transition: opacity 0.5s ease; /* Smooth transition for opacity */
+    opacity: 0; /* Hidden initially */
+    z-index: 0; /* Place behind the main section */
+}
+
+/* Avatar portal container */
+.avatar-portal {
+    position: relative;
+    text-align: center;
+    height: 100%;
+}
+
+/* Portal top and bottom images */
+.portal-image {
+    max-width: 100%;
+    height: auto;
+    position: absolute;
+}
+
+
+.bottom-image {
+    bottom: -5%;
+    left: 50%;
+    transform: translate(-50%, 5%);
+    mix-blend-mode: screen;
+    filter: drop-shadow(0 0 15px rgba(255, 0, 255, 0.8)); /* Neon effect */
+}
+
+/* Stats box container with hologram */
+.stats-box {
+    position: absolute;
+    top: 15%; /* Adjust to place over the bar image */
+    left: 4%; /* Adjust spacing from the left side */
+    width: 350px;
+    height: auto;
+    background: rgba(70, 70, 70, 0); /* Dark semi-transparent background */
+    border: 3px solid #0ff; /* Neon cyan border for cyberpunk effect */
+    box-shadow: 0 0 20px #0ff, 0 0 20px #f0f; /* Neon glow effect with purple */
+    border-radius: 10px;
+    padding: 20px;
+    z-index: 3; /* Ensure it is above the bar image */
+}
+
+/* Hologram background image */
+.hologram-image {
+    width: 100%;
+    height: auto;
+    filter: brightness(150%) contrast(200%); /* Cyberpunk-like hologram effect */
+    mix-blend-mode: screen;
+    z-index: 1;
+}
+
+/* Stats content */
+.stats-content {
+    position: relative; /* Use relative positioning */
+    top: -30%; /* Move the text section up */
+    left: 50%;
+    transform: translateX(-50%); /* Center align */
+    z-index: 2;
+    color: #fff; /* White text color */
+    font-family: 'Orbitron', sans-serif; /* Use the cyberpunk font */
+    text-align: center; /* Center text */
+    text-shadow: 0 0 10px #0ff, 0 0 20px #f0f; /* Neon glowing text */
+}
+
+.title-wrapper {
+    margin-bottom: 10px; /* Space between the title and the stats */
+}
+
+.stats-content h2 {
+    font-size: 1.5rem; /* Increased font size for title */
+    margin: 0; /* Remove default margin */
+    text-align: center; /* Center align the title */
+    text-shadow: 0 0 20px #0ff; /* Glowing neon effect */
+}
+
+.stats-content p {
+    font-size: 1rem; /* Adjusted font size for stats */
+    margin: 8px 0; /* Margins for spacing */
+    text-transform: uppercase;
+    display: flex;
+    justify-content: space-between; /* Keep categories and XP points in line */
+    padding: 0 10px;
+    animation: glitch 1s infinite; /* Glitch animation */
+}
+
+.stats-content p span {
+    display: inline-block;
+}
+
+/* Adjusting categories and XP positions */
+.stats-type {
+    text-align: left;
+    margin-right: 20px; /* Move categories to the left */
+}
+
+.xp-points {
+    text-align: right;
+    margin-left: 20px; /* Move XP points to the right */
+}
+
+.current-stat,
+.level-up-stat {
+    font-size: 0.9rem; /* Keep the font size for current stat and level-up stat */
+    text-align: right;
+    color: #0ff; /* Neon cyan for current stat and needed stat */
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .stats-box {
+        width: 250px;
+        top: 10%; /* Adjust position for smaller screens */
+    }
+
+    .stats-content {
+        font-size: 0.9rem;
+    }
+}
+
+/* Glitch animation */
+@keyframes glitch {
+    0% { 
+        text-shadow: 
+            0 0 5px #0ff, 
+            0 0 10px #0ff, 
+            0 0 15px #f0f, 
+            0 0 20px #f0f; 
+    }
+    20% {
+        text-shadow: 
+            1px 1px 0 rgba(255, 0, 0, 0.6), 
+            0 0 5px #0ff, 
+            0 0 10px #0ff, 
+            0 0 15px #f0f, 
+            1px 0 5px rgba(255, 0, 0, 0.6);
+    }
+    40% { 
+        text-shadow: 
+            1px 1px 0 rgba(0, 255, 0, 0.6), 
+            0 0 5px #0ff, 
+            0 0 10px #0ff, 
+            0 0 15px #f0f; 
+    }
+    60% {
+        text-shadow: 
+            1px 1px 0 rgba(0, 0, 255, 0.6), 
+            0 0 5px #0ff, 
+            0 0 10px #0ff, 
+            0 0 15px #f0f; 
+    }
+    80% {
+        text-shadow: 
+            1px 1px 0 rgba(255, 255, 0, 0.6), 
+            0 0 5px #0ff, 
+            0 0 10px #0ff, 
+            0 0 15px #f0f; 
+    }
+    100% {
+        text-shadow: 
+            0 0 5px #0ff, 
+            0 0 10px #0ff, 
+            0 0 15px #f0f, 
+            0 0 20px #f0f; 
+    }
+}
+
+/* Level container */
+.level-container {
+    display: flex;
+    align-items: center; /* Aligns items vertically */
+    position: relative;
+    margin-top: 20px; /* Adjust space above the level bar */
+    justify-content: flex-end; /* Align items to the right */
+}
+
+
+/* Level circle */
+.level-circle {
+    width: 60px; /* Increased size */
+    height: 60px; /* Increased size */
+    border-radius: 50%; /* Make it circular */
+    background: rgba(0, 0, 0, 0); /* Match the stats box background color */
+    border: 3px solid #0ff; /* Neon cyan border */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #fff; /* Change text color to white */
+    font-size: 1.8rem; /* Increase font size */
+    text-shadow: 0 0 20px #0ff, 0 0 20px #f0f; /* Neon glow effect */
+    position: absolute; /* Absolute positioning */
+    top: -400px; /* Shift up slightly */
+    right: 280px; /* Shift right slightly */
+    animation: glitch 1s infinite; /* Apply glitch animation to the circle number */
+    filter: drop-shadow(0 0 15px rgba(0, 255, 255, 0.8)); /* Neon glow effect */
+}
+
+/* Level bar */
+.level-bar {
+    width: 200px; /* Set a fixed width for the progress bar */
+    height: 30px; /* Height of the progress bar */
+    background: #00000000; /* Black background for the bar */
+    border-radius: 10px; /* Rounded corners */
+    position: relative;
+    overflow: hidden; /* Hide overflow */
+    margin-right: 70px; /* Add margin to right for spacing */
+    margin-top: -750px; /* Move the bar upwards; adjust value as needed */
+    border: 3px solid #0ff; /* Add highlighted border */
+    box-shadow: 0 0 20px #0ff, 0 0 30px #0ff; /* Neon glow effect for the level bar */
+}
+
+
+
+
+/* Level progress */
+.level-progress {
+    width: 50%; /* Change this to represent progress (50% here) */
+    height: 100%; /* Full height */
+    background: linear-gradient(90deg, #4e0f5e, #7d12ff); /* Darker purple gradient for progress */
+    animation: glitch 1s infinite; /* Glitch effect */
+    position: absolute;
+    top: 0;
+    left: 0;
+    border-radius: 10px; /* Rounded corners for progress */
+}
+
+/* Glitch animation for both level circle and progress */
+@keyframes glitch {
+    0% { 
+        text-shadow: 
+            0 0 5px #7d12ff, 
+            0 0 10px #7d12ff, 
+            0 0 15px #4e0f5e, 
+            0 0 20px #4e0f5e; 
+    }
+    20% {
+        text-shadow: 
+            1px 1px 0 rgba(255, 0, 0, 0.6), 
+            0 0 5px #7d12ff, 
+            0 0 10px #7d12ff, 
+            0 0 15px #4e0f5e, 
+            1px 0 5px rgba(255, 0, 0, 0.6);
+    }
+    40% { 
+        text-shadow: 
+            1px 1px 0 rgba(0, 255, 0, 0.6), 
+            0 0 5px #7d12ff, 
+            0 0 10px #7d12ff, 
+            0 0 15px #4e0f5e; 
+    }
+    60% {
+        text-shadow: 
+            1px 1px 0 rgba(0, 0, 255, 0.6), 
+            0 0 5px #7d12ff, 
+            0 0 10px #7d12ff, 
+            0 0 15px #4e0f5e; 
+    }
+    80% {
+        text-shadow: 
+            1px 1px 0 rgba(255, 255, 0, 0.6), 
+            0 0 5px #7d12ff, 
+            0 0 10px #7d12ff, 
+            0 0 15px #4e0f5e; 
+    }
+    100% {
+        text-shadow: 
+            0 0 5px #7d12ff, 
+            0 0 10px #7d12ff, 
+            0 0 15px #4e0f5e, 
+            0 0 20px #4e0f5e; 
+    }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .level-circle {
+        width: 40px; /* Smaller circle for mobile */
+        height: 40px; /* Smaller circle for mobile */
+        font-size: 1.2rem; /* Smaller font size */
+    }
+    .level-bar {
+        width: 150px; /* Adjusted width for mobile */
+    }
+}
+
+.avatar-image {
+    width: 350px; /* Adjust the size of the avatar */
+    height: auto;
+    display: block;
+    margin: 0 auto;
+    position: relative;
+    top: 125px; /* Adjust to move the avatar above the portal */
+    z-index: 10; /* Keep the avatar above the portal image */
+    
+    /* Glowing effect with drop-shadow */
+    filter: drop-shadow(0 0 20px rgba(255, 105, 180, 0.8)); /* Pink-ish glow */
+    animation: avatar-glow 1.5s infinite alternate, float 3s infinite alternate; /* Glowing and floating animation */
+}
+
+/* Keyframes for glowing pulse */
+@keyframes avatar-glow {
+    from {
+        filter: drop-shadow(0 0 10px rgba(255, 105, 180, 0.5));
+    }
+    to {
+        filter: drop-shadow(0 0 30px rgba(255, 105, 180, 1));
+    }
+}
+
+/* Keyframes for floating effect */
+@keyframes float {
+    0% {
+        transform: translateY(0); /* Original position */
+    }
+    50% {
+        transform: translateY(-10px); /* Move up */
+    }
+    100% {
+        transform: translateY(0); /* Return to original position */
+    }
+}
+
+/* Radar chart container */
+/* Radar chart container */
+.chart-container {
+    position: absolute;
+    top: 52%; /* Adjust to place over the bar image */
+    left: 4%; /* Adjust spacing from the left side */
+    width: 350px;
+    height: 320px;
+    background: rgba(70, 70, 70, 0); /* Dark semi-transparent background */
+    border: 3px solid #0ff; /* Neon cyan border for cyberpunk effect */
+    box-shadow: 0 0 20px #0ff, 0 0 20px #f0f; /* Neon glow effect with purple */
+    border-radius: 10px;
+    padding: 20px;
+    z-index: 3; /* Ensure it is above the bar image */
+}
+
+/* Style for radar chart labels */
+.radar-chart-container canvas {
+    /* Ensure the canvas fits within the container */
+    width: 100% !important;
+    height: auto !important; /* Maintain aspect ratio */
+}
+
+/* Level info box with neon, glitch, and cyberpunk styling */
+.level-info-box {
+    position: absolute;
+    top: 27%; /* Adjust to place over the bar image */
+    left: 73%; /* Adjust spacing from the left side */
+    width: 350px;
+    height: auto;
+    background: rgba(70, 70, 70, 0); /* Dark semi-transparent background */
+    border: 3px solid #0ff; /* Neon cyan border for cyberpunk effect */
+    box-shadow: 0 0 20px #0ff, 0 0 20px #f0f; /* Neon glow effect with purple */
+    border-radius: 10px;
+    padding: 20px;
+    z-index: 3; /* Ensure it is above the bar image */
+}
+
+/* Title wrapper styling */
+.title-wrapper {
+    margin-bottom: 10px; /* Space between the title and the stats */
+}
+
+/* XP Info */
+.xp-info {
+    color: #fff; /* Change text color to white */
+    font-size: 1.0rem; /* Adjust font size as needed */
+    margin-top: -350px; /* Negative margin to move up */
+    margin-left: 82%;
+    text-shadow: 0 0 5px #0ff, 0 0 10px #0ff; /* Neon glow effect */
+}
+
+
+/* Specific styles for XP values */
+.xp-value, .xp-required {
+    color: #0ff; /* Neon cyan color for XP values */
+    font-weight: bold; /* Bold for emphasis */
+}
+
+/* Tasks Box Container with hologram effect */
+.tasks-box {
+    position: absolute;
+    top: 60%; /* Adjust to position below the Stats box */
+    left: 73%; /* Align with the Stats box */
+    width: 350px;
+    height: auto;
+    background: rgba(70, 70, 70, 0); /* Semi-transparent background */
+    border: 3px solid #0ff; /* Neon cyan border */
+    box-shadow: 0 0 20px #0ff, 0 0 20px #f0f; /* Neon glow effect */
+    border-radius: 10px;
+    padding: 20px;
+    z-index: 3; /* Ensure it is above other elements */
+}
+
+/* Leaderboard box styling */
+.leaderboard-box {
+    position: absolute;
+    top: 115%; /* Position below other boxes */
+    left: 6%;
+    transform: translate(-50%, 100%); /* Start offscreen */
+    width: 500px;
+    background: rgba(0, 0, 0, 0.8); /* Dark semi-transparent background */
+    border: 3px solid #0ff; /* Neon cyan border */
+    box-shadow: 0 0 20px #0ff, 0 0 20px #f0f; /* Neon glow effect */
+    border-radius: 10px;
+    padding: 20px;
+    z-index: 3; /* Above background but below avatar */
+    color: #fff;
+    font-family: 'Orbitron', sans-serif;
+    text-align: center;
+    opacity: 0; /* Hidden initially for animation */
+    animation: slideIn 1s forwards; /* Slide in animation */
+    animation-delay: 1s; /* Delays slide-in */
+}
+
+/* Slide in animation for leaderboard */
+@keyframes slideIn {
+    from {
+        transform: translate(-50%, 100%); /* Start from below screen */
+        opacity: 0;
+    }
+    to {
+        transform: translate(-50%, 0); /* End at original position */
+        opacity: 1;
+    }
+}
+
+/* Leaderboard content */
+.leaderboard-title {
+    font-size: 1.5rem;
+    text-shadow: 0 0 10px #0ff, 0 0 20px #f0f; /* Neon glow effect */
+    margin-bottom: 10px;
+}
+
+.leaderboard-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.leaderboard-list li {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    border-bottom: 1px solid rgba(0, 255, 255, 0.3); /* Neon line between items */
+    text-shadow: 0 0 5px #0ff, 0 0 10px #f0f; /* Neon effect */
+}
+
+.leaderboard-list li:last-child {
+    border-bottom: none; /* Remove line for last item */
+}
+
+.leaderboard-rank {
+    font-weight: bold;
+    color: #0ff; /* Neon cyan */
+}
+
+.leaderboard-name {
+    color: #f0f; /* Neon purple for names */
+}
+
+.leaderboard-score {
+    color: #0ff; /* Neon cyan for scores */
+}
+
+    /* Heatmap heading styling */
+    .heatmap-heading {
+        position: absolute;
+        top: 50%; /* Align above the heatmap box */
+        left: 500px;
+        transform: translate(-50%, -100%);
+        color: #c55aff;
+        font-size: 18px;
+        font-weight: bold;
+        text-align: center;
+        text-shadow: 0 0 10px #c55aff, 0 0 20px #f0f; /* Neon glow effect */
+        z-index: 3;
+        opacity: 0;
+        animation: slideIn 1s forwards;
+        animation-delay: 1.2s; /* Slide in before the heatmap */
+    }
+
+    .heatmap-container {
+        position: absolute; /* Use absolute positioning */
+        top: 110%; /* Change this value to the desired position */
+        left: 70%; /* Center horizontally */
+        transform: translate(-50%, 0);
+        width: 700px;
+        z-index: 3;
+        opacity: 1; /* Make visible */
+    }
+    
+    /* Month navigation styling */
+    .heatmap-navigation {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 8px;
+        font-size: 18px;
+        font-weight: bold;
+        color: #ffffff;
+        text-shadow: 0 0 10px #0ff, 0 0 20px #f0f;
+    }
+
+    .arrow {
+        cursor: pointer;
+        margin: 0 20px;
+        color: #ffffff;
+        text-shadow: 0 0 10px #0ff, 0 0 20px #f0f;
+    }
+
+    .month-label {
+        color: #ffffff;
+        text-align: center;
+    }
+
+ /* Heatmap box styling */
+.heatmap-box {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr); /* 7 columns for days of the week */
+    grid-template-rows: repeat(6, 1fr) auto; /* Four rows of equal height, last row auto */
+    gap: 4px;
+    width: 500px; /* Adjust width as necessary */
+    height: 305px; /* Adjust height as necessary */
+    background: rgba(0, 0, 0, 0.8);
+    border: 3px solid #0ff;
+    box-shadow: 0 0 20px #0ff, 0 0 20px #f0f;
+    border-radius: 10px;
+    padding: 10px;
+    margin-left: auto;
+}
+
+    
+    
+    /* Day label styling */
+    .day-label {
+        color: #ffffff;
+        font-weight: bold;
+        text-align: center;
+    }
+
+    /* Heatmap cell styling */
+    .heatmap-cell {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        border-radius: 3px;
+        box-shadow: 0 0 5px rgba(197, 90, 255, 0.5);
+        background-color: #c55aff;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 14px;
+        color: white; /* Change text color for contrast */
+    }
+
+    /* Heatmap cell intensity variations */
+    .heatmap-cell.low {
+        background-color: rgba(197, 90, 255, 0.4);
+    }
+
+    .heatmap-cell.medium {
+        background-color: rgba(197, 90, 255, 0.7);
+    }
+
+    .heatmap-cell.high {
+        background-color: rgba(197, 90, 255, 1);
+    }
+
+    .heatmap-cell.no {
+        background-color: rgba(204, 204, 204, 0.473);
+    }
+
+    /* Animation for sliding in */
+    @keyframes slideIn {
+        from { opacity: 0; transform: translateY(-20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }

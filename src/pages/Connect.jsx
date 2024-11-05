@@ -1,112 +1,155 @@
-import React, { useState } from 'react';
-import '../assets/css/Connect.css'; // Import custom CSS for Connect page
+import React, { useCallback, useEffect, useState } from 'react';
+import '../assets/css/Connect.css';
 
 function Connect() {
-    // Sample friends data
-    const friends = [
-        { username: 'JohnDoe', level: 8, xp: 1200 },
-        { username: 'AliceSmith', level: 15, xp: 2500 },
-        { username: 'BobMartin', level: 12, xp: 1800 }
-    ];
+    const [activeTab, setActiveTab] = useState('allUsers');
+    const [searchTerm, setSearchTerm] = useState('');
+    const [allUsers, setAllUsers] = useState([]);
+    const [friends, setFriends] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
 
-    // State to manage the followed friends and search input
-    const [followedFriends, setFollowedFriends] = useState([]);
-    const [searchInput, setSearchInput] = useState('');
-    const [foundFriend, setFoundFriend] = useState(null);
+    const API_BASE_URL = 'http://localhost:5500/api';
 
-    // Function to search for a friend
-    const searchFriend = () => {
-        const friend = friends.find(friend => friend.username.toLowerCase() === searchInput.toLowerCase());
-        if (friend) {
-            setFoundFriend(friend);
-        } else {
-            alert('Friend not found.');
-            setFoundFriend(null); // Clear the found friend if not found
-        }
-    };
+    const customFetch = async (url, options = {}) => {
+        const token = localStorage.getItem('token');
+        const headers = {
+            'Content-Type': 'application/json',
+            ...options.headers,
+            Authorization: `Bearer ${token}`,
+        };
 
-    // Function to follow a user
-    const followUser = (username) => {
-        if (!followedFriends.includes(username)) {
-            setFollowedFriends([...followedFriends, username]);
-            alert(`You are now following: ${username}`);
-        } else {
-            alert(`You are already following: ${username}`);
-        }
-    };
-
-    // Function to update the leaderboard
-    const getLeaderboard = () => {
-        return followedFriends.map((username, index) => {
-            const friend = friends.find(friend => friend.username === username);
-            return (
-                <tr key={username}>
-                    <td>{index + 1}</td>
-                    <td>{friend.username}</td>
-                    <td>{friend.level}</td>
-                    <td>{friend.xp} XP</td>
-                </tr>
-            );
+        const response = await fetch(url, {
+            ...options,
+            headers,
         });
+
+        if (!response.ok) {
+            throw new Error(`Error: ${response.status} ${response.statusText}`);
+        }
+
+        return response.json();
     };
+
+    const fetchAllUsers = useCallback(async () => {
+        setLoading(true);
+        setError(null);
+        try {
+            const data = await customFetch(`${API_BASE_URL}/connects/users`);
+            setAllUsers(data);
+        } catch (error) {
+            console.error("Error fetching users:", error);
+            setError('Failed to load users. Please try again later.');
+        } finally {
+            setLoading(false);
+        }
+    }, [API_BASE_URL]);
+
+    const fetchFriends = useCallback(async () => {
+        setLoading(true);
+        setError(null);
+        try {
+            const data = await customFetch(`${API_BASE_URL}/connects/friends`);
+            setFriends(data.friends);
+        } catch (error) {
+            console.error('Error fetching friends:', error);
+            setError('Failed to load friends. Please try again later.');
+        } finally {
+            setLoading(false);
+        }
+    }, [API_BASE_URL]);
+
+    const addFriend = async (user) => {
+        try {
+            await customFetch(`${API_BASE_URL}/connects/send-request/${user._id}`, {
+                method: 'POST'
+            });
+
+            alert('Friend request sent!');
+            fetchFriends(); // Refresh friends list
+        } catch (error) {
+            console.error('Error sending friend request:', error);
+            alert('An error occurred while sending the friend request. Please try again.');
+        }
+    };
+
+    const filteredUsers = allUsers.filter(user =>
+        user.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
+    const isFriend = (userId) => friends.some(friend => String(friend.friendId) === userId);
+
+    useEffect(() => {
+        fetchAllUsers();
+        fetchFriends();
+    }, [fetchAllUsers, fetchFriends]);
 
     return (
         <div className="background">
-            <div className="connect-container">
-                <h1>Connect with Friends</h1>
-
-                {/* Search bar */}
-                <div className="search-bar">
-                    <input 
-                        type="text" 
-                        id="searchInput" 
-                        placeholder="Search by username" 
-                        value={searchInput} 
-                        onChange={(e) => setSearchInput(e.target.value)} 
-                    />
-                    <button type="button" onClick={searchFriend}>Search</button>
+            <div className="friends-page">
+                <div className="tabs">
+                    <button 
+                        className={`tab ${activeTab === 'allUsers' ? 'active-tab' : ''}`} 
+                        onClick={() => setActiveTab('allUsers')}
+                    >
+                        All Users
+                    </button>
+                    <button 
+                        className={`tab ${activeTab === 'myFriends' ? 'active-tab' : ''}`} 
+                        onClick={() => setActiveTab('myFriends')}
+                    >
+                        My Friends
+                    </button>
                 </div>
 
-                {/* Friend List */}
-                <div className="friend-list" id="friendList">
-                    <h2>Your Friends</h2>
-                    {foundFriend ? (
-                        <div className="friend">
-                            <p><strong>Username:</strong> {foundFriend.username}</p>
-                            <p><strong>Level:</strong> {foundFriend.level}</p>
-                            <p><strong>XP:</strong> {foundFriend.xp}</p>
-                            <button onClick={() => followUser(foundFriend.username)}>Follow</button>
-                        </div>
-                    ) : (
-                        <div className="friend placeholder">
-                            <p><strong>Username:</strong> </p>
-                            <p><strong>Level:</strong> </p>
-                            <p><strong>XP:</strong> </p>
-                        </div>
-                    )}
-                </div>
+                {activeTab === 'allUsers' && (
+                    <div className="search-bar">
+                        <input 
+                            type="text" 
+                            placeholder="Search for friends..." 
+                            value={searchTerm} 
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                        />
+                    </div>
+                )}
 
-                {/* Leaderboard */}
-                <div className="leaderboard">
-                    <h2>Leaderboard</h2>
-                    <table id="leaderboardTable">
-                        <thead>
-                            <tr>
-                                <th>Rank</th>
-                                <th>Username</th>
-                                <th>Level</th>
-                                <th>XP</th>
-                            </tr>
-                        </thead>
-                        <tbody id="leaderboardBody">
-                            {followedFriends.length > 0 ? getLeaderboard() : (
-                                <tr>
-                                    <td colSpan="4" style={{ textAlign: 'center' }}>No leaderboard data available</td>
-                                </tr>
-                            )}
-                        </tbody>
-                    </table>
-                </div>
+                {loading ? (
+                    <p>Loading...</p>
+                ) : error ? (
+                    <p>{error}</p>
+                ) : activeTab === 'allUsers' ? (
+                    <div className="user-list">
+                        {filteredUsers.map(user => (
+                            <div key={user._id} className="user-card">
+                                <div className="user-info">
+                                    <h3>{user.name}</h3>
+                                    <p>XP: {user.XP}</p>
+                                    <p>Level: {user.level}</p>
+                                </div>
+                                <button 
+                                    className="add-btn" 
+                                    onClick={() => addFriend(user)} 
+                                    disabled={isFriend(user._id)}
+                                >
+                                    {isFriend(user._id) ? 'Added' : 'Add'}
+                                </button>
+                            </div>
+                        ))}
+                    </div>
+                ) : (
+                    <div className="user-list">
+                        {friends.map(friend => (
+                            <div key={friend._id} className="user-card">
+                                <div className="user-info">
+                                    <h3>{friend.name}</h3>
+                                    <p>XP: {friend.XP}</p>
+                                    <p>Level: {friend.level}</p>
+                                </div>
+                                <button className="add-btn" disabled>Added</button>
+                            </div>
+                        ))}
+                    </div>
+                )}
             </div>
         </div>
     );
