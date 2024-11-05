@@ -12,50 +12,6 @@ html, body {
 }
 
 
-/* Navbar styling */
-.navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 20px;
-    background-color: rgba(0, 0, 0, 0.8);
-    border-bottom: 3px solid #0ff; /* Neon cyan border for cyberpunk effect */
-    box-shadow: 0 0 20px #0ff, 0 0 20px #f0f; /* Neon glow effect with purple */
-    position: fixed;
-    width: 100%;
-    top: 0;
-    z-index: 10;
-}
-
-.navbar .logo img {
-    width: 200px;
-    height: auto;
-    filter: drop-shadow(0 0 10px #0ff); /* Neon effect */
-}
-
-.nav-links {
-    list-style: none;
-    display: flex;
-}
-
-.nav-links li {
-    margin: 0 15px;
-}
-
-.nav-links a {
-    text-decoration: none;
-    color: #0ff;
-    font-family: 'Orbitron', sans-serif;
-    font-size: 1.1rem;
-    text-shadow: 0 0 10px #0ff, 0 0 20px #f0f;
-    transition: color 0.3s;
-}
-
-.nav-links a:hover {
-    color: #f0f;
-}
-
-
 /* Main section and backgrounds */
 .main-section {
     min-height: 100vh;
