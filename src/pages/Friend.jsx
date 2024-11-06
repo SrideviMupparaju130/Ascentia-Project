@@ -190,7 +190,7 @@ function Connect() {
                     </div>
                 ) : (
                     <div className="request-list">
-                        <h2>Received Requests</h2>
+                        <h4>Received Requests</h4>
                         {receivedRequests.map(request => (
                             <div key={request.userId._id} className="user-card">
                                 <div className="user-info">
@@ -206,7 +206,7 @@ function Connect() {
                                 </button>
                             </div>
                         ))}
-                        <h2>Sent Requests</h2>
+                        <h4>Sent Requests</h4>
                         {sentRequests.map(request => (
                             <div key={request.friendId._id} className="user-card">
                                 <div className="user-info">
