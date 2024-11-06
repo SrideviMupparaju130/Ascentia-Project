@@ -80,7 +80,7 @@ function Task() {
 
     // Handle task completion submission with summary and file
     const handleSubmitCompletion = async () => {
-        if (!summary || !file) {
+        if (!summary) {
             alert('Please provide a summary and upload a file.');
             return;
         }
