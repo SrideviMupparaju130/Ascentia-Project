@@ -28,7 +28,7 @@ function Login({ setUserName }) {
             if (response.data.token) { // Check if token is in the response
                 setUserName(response.data.user.name); // Set user name on successful login
                 localStorage.setItem('token', response.data.token); // Store JWT
-                navigate('/task'); // Redirect to task page
+                navigate('/dashboard'); // Redirect to task page
             } else {
                 setError('Unexpected response format.'); // Handle unexpected response
             }
