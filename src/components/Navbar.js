@@ -38,7 +38,7 @@ const Navbar = ({ userName, setUserName }) => {
                                 <Link className="nav-link" to="/quest">Quest</Link>
                             </li>
                             <li className="nav-item">
-                                <Link className="nav-link" to="/connect">Connect+</Link>
+                                <Link className="nav-link" to="/friend">Connect+</Link>
                             </li>
                             <li className="nav-item">
                                 <button className="nav-link btn btn-link transparent-logout" onClick={handleLogout}>

@@ -7,7 +7,7 @@ require('dotenv').config(); // Load environment variables from .env file
 const userRoutes = require('./routes/userRoutes');
 const taskRoutes = require('./routes/taskRoutes'); // Task routes added
 const questRoutes = require('./routes/questRoutes'); 
-const connectRoutes = require('./routes/connectRoutes');
+const friendRoutes = require('./routes/friendRoutes');
 
 
 const app = express();
@@ -61,7 +61,7 @@ app.use(session({
 app.use('/api/users', userRoutes); // User routes
 app.use('/api/tasks', taskRoutes); // Task routes
 app.use('/api/quests',questRoutes);
-app.use('/api/connects',connectRoutes);
+app.use('/api/friends',friendRoutes);
 
 // Global error handling middleware
 app.use((err, req, res, next) => {

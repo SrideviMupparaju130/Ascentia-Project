@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Navbar from './components/Navbar';
-import Connect from './pages/Connect';
 import Dashboard from './pages/Dashboard';
+import Friend from './pages/Friend';
 import Login from './pages/Login';
 import Pomodoro from './pages/Pomodoro';
 import Quest from './pages/Quest';
@@ -22,7 +22,7 @@ function App() {
           <Route path="/login" element={<Login setUserName={setUserName} setUserId={setUserId} />} /> {/* Pass setUserId to Login */}
           <Route path="/signup" element={<SignUp />} />
           <Route path="/task" element={<Task />} />
-          <Route path="/connect" element={<Connect />} />
+          <Route path="/friend" element={<Friend />} />
           <Route path="/pomodoro" element={<Pomodoro />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/quest" element={<Quest userId={userId} />} /> {/* Pass userId to Quest */}
