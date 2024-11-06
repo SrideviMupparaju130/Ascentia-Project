@@ -4,6 +4,8 @@ import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import '../assets/css/Navbar.css';
+import LogoImage from '../assets/images/LOGO.png';
+
 
 const Navbar = ({ userName, setUserName }) => {
     const navigate = useNavigate();
@@ -33,7 +35,9 @@ const Navbar = ({ userName, setUserName }) => {
 
     return (
         <nav className={`navbar navbar-expand-lg ${scrolled ? 'navbar-scrolled' : 'navbar-dark'} ${hidden ? 'navbar-hidden' : ''} fixed-top`}>
-            <Link className="navbar-brand" to="/">Ascentia</Link>
+            <Link className="navbar-brand" to="/">
+                <img src={LogoImage} alt="Ascentia Logo" className="navbar-logo" />
+            </Link>
 
             <button
                 className="navbar-toggler"

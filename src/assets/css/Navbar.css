@@ -8,6 +8,11 @@
     transition: background 0.3s ease, box-shadow 0.3s ease;
 }
 
+.navbar-logo {
+    height: 40px;
+    width: auto;
+}
+
 .navbar-brand {
     color: #00ffff; /* Neon cyan color */
     font-weight: bold;
