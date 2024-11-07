@@ -22,7 +22,8 @@ const userSchema = new mongoose.Schema({
     level: {
         type: Number,
         default: 1,
-    }
+    },
+    streak: { type: Number, default: 0 }, // Streak in days or other unit
 });
 
 const User = mongoose.model('User', userSchema);
