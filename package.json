@@ -5,6 +5,8 @@
   "dependencies": {
     "@fortawesome/free-solid-svg-icons": "^6.6.0",
     "@fortawesome/react-fontawesome": "^0.2.2",
+    "@fullcalendar/daygrid": "^6.1.15",
+    "@fullcalendar/react": "^6.1.15",
     "@google/generative-ai": "^0.21.0",
     "@svgr/webpack": "^8.1.0",
     "@testing-library/jest-dom": "^6.5.0",
@@ -25,6 +27,7 @@
     "node-cron": "^3.0.3",
     "postcss": "^8.4.47",
     "react": "^18.3.1",
+    "react-calendar": "^5.1.0",
     "react-chartjs-2": "^5.2.0",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.26.2",

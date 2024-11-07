@@ -5,12 +5,35 @@ const authenticate = require('../middleware/authenticate');
 
 const router = express.Router();
 
+// Define level thresholds
+const levelThresholds = [20, 50, 100, 200, 400]; // Extend as necessary
+
+// Helper function to determine the current level and next level XP
+const calculateLevelInfo = (totalXP) => {
+    let level = 1;
+    let nextLevelXP = levelThresholds[0];
+    let currentLevelXP = 0;
+
+    for (let i = 0; i < levelThresholds.length; i++) {
+        if (totalXP < levelThresholds[i]) {
+            nextLevelXP = levelThresholds[i];
+            break;
+        }
+        currentLevelXP = levelThresholds[i];
+        level = i + 2;
+    }
+
+    const progressToNextLevel = ((totalXP - currentLevelXP) / (nextLevelXP - currentLevelXP)) * 100;
+
+    return { level, nextLevelXP, currentLevelXP, progressToNextLevel };
+};
+
 // Get dashboard data for the authenticated user
 router.get('/', authenticate, async (req, res) => {
     try {
         const userId = req.user.id;
 
-        // Fetch user stats (XP, level, streak, etc.)
+        // Fetch user data
         const user = await User.findById(userId);
         if (!user) return res.status(404).json({ error: 'User not found' });
 
@@ -26,10 +49,20 @@ router.get('/', authenticate, async (req, res) => {
             Finance: 0,
         };
 
+        // Group tasks by date
+        const groupedTasksByDate = tasks.reduce((acc, task) => {
+            const taskDate = task.date.toISOString().split('T')[0]; // Get date in 'YYYY-MM-DD' format
+            if (!acc[taskDate]) {
+                acc[taskDate] = [];
+            }
+            acc[taskDate].push(task);
+            return acc;
+        }, {});
+
         // Calculate category-wise XP based on task difficulty
         tasks.forEach(task => {
             if (task.completed) {
-                let taskXP = task.difficulty === 'easy' ? 5 : task.difficulty === 'medium' ? 10 : 20;
+                const taskXP = task.difficulty === 'easy' ? 5 : task.difficulty === 'medium' ? 10 : 20;
                 categoryXP[task.type] += taskXP;
             }
         });
@@ -39,9 +72,13 @@ router.get('/', authenticate, async (req, res) => {
             totalTasks: tasks.length,
             completedTasks: tasks.filter(task => task.completed).length,
             tasksByCategory: categoryXP,
+            groupedTasksByDate,  // Send grouped tasks by date
         };
 
-        // Fetch leaderboard - all users sorted by totalXP
+        // Calculate level info based on user's total XP
+        const { level, nextLevelXP, currentLevelXP, progressToNextLevel } = calculateLevelInfo(user.XP);
+
+        // Fetch leaderboard
         const leaderboard = await User.find().sort({ XP: -1 }).limit(5);
         const leaderboardData = leaderboard.map(user => ({
             username: user.name,
@@ -51,7 +88,10 @@ router.get('/', authenticate, async (req, res) => {
         res.status(200).json({
             user: {
                 name: user.name,
-                level: user.level,
+                level,
+                nextLevelXP,
+                currentLevelXP,
+                progressToNextLevel,  // Send progress percentage for frontend
                 streak: user.streak || 0,
                 totalXP: user.XP,
             },

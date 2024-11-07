@@ -1,5 +1,7 @@
 import { Chart, Filler, LineElement, PointElement, RadarController, RadialLinearScale } from 'chart.js';
 import React, { useEffect, useRef, useState } from 'react';
+import Calendar from 'react-calendar';
+import 'react-calendar/dist/Calendar.css';
 import '../assets/css/Dashboard.css';
 import avatarImage from '../assets/images/girl.png';
 import portalImage from '../assets/images/por.png';
@@ -14,10 +16,12 @@ const Dashboard = () => {
         streak: 0,
         categoryXP: { Career: 0, Health: 0, 'Self Care': 0, Intellectual: 0, Finance: 0 },
         leaderboard: [],
-        tasks: [],
+        groupedTasksByDate: {},
+        progressToNextLevel: 0,
     });
 
-    const chartRef = useRef(null); 
+    const [selectedDate, setSelectedDate] = useState(new Date());
+    const chartRef = useRef(null);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -30,13 +34,8 @@ const Dashboard = () => {
                     },
                 });
 
-                if (!response.ok) {
-                    throw new Error(`Error: ${response.status} ${response.statusText}`);
-                }
-
+                if (!response.ok) throw new Error(`Error: ${response.status} ${response.statusText}`);
                 const data = await response.json();
-
-                // Update state with data and initialize radar chart
                 setUserStats({
                     name: data.user.name,
                     level: data.user.level,
@@ -44,9 +43,9 @@ const Dashboard = () => {
                     streak: data.user.streak,
                     categoryXP: data.stats.tasksByCategory,
                     leaderboard: data.leaderboard,
-                    tasks: data.stats.tasksByCategory,
+                    groupedTasksByDate: data.stats.groupedTasksByDate,
+                    progressToNextLevel: data.user.progressToNextLevel,
                 });
-
                 updateRadarChart(data.stats.tasksByCategory);
             } catch (error) {
                 console.error('Error fetching dashboard data:', error);
@@ -71,37 +70,61 @@ const Dashboard = () => {
                         categoryXP.Intellectual,
                         categoryXP.Finance
                     ],
-                    backgroundColor: 'rgba(255, 0, 255, 0.2)',
-                    borderColor: '#0ff',
-                    pointBackgroundColor: '#f0f',
-                    pointBorderColor: '#fff',
-                    pointHoverBackgroundColor: '#ff0',
-                    pointHoverBorderColor: '#0ff'
+                    backgroundColor: 'rgba(70, 70, 70, 0)',  // Semi-transparent purple
+                    borderColor: '#0ff',  // Neon cyan border
+                    pointBackgroundColor: '#f0f',  // Neon pink for points
+                    pointBorderColor: '#fff',  // White border for points
+                    pointHoverBackgroundColor: '#ff0',  // Neon yellow on hover
+                    pointHoverBorderColor: '#0ff'  // Neon cyan on hover
                 }]
             },
             options: {
-                elements: {
-                    line: {
-                        borderWidth: 3
-                    }
-                },
+                elements: { line: { borderWidth: 3, tension: 0.4 } }, // Cyberpunk style with smooth lines
                 scales: {
                     r: {
-                        angleLines: { color: '#f0f' },
-                        grid: { color: '#0ff' },
+                        angleLines: { color: '#f0f' },  // Neon pink for angle lines
+                        grid: { color: 'rgba(255, 0, 255, 0.3)' },  // Semi-transparent grid in purple
                         pointLabels: {
-                            color: '#0ff',
-                            font: { size: 16, family: 'Arial', weight: 'bold' }
+                            color: '#0ff',  // Neon cyan for labels
+                            font: { size: 18, weight: 'bold' }  // Orbitron font and cyberpunk styling
                         },
                         ticks: {
-                            backdropColor: 'rgba(0, 0, 0, 0.8)',
-                            color: '#fff',
-                            font: { size: 14 }
+                            backdropColor: 'rgba(0, 0, 0, 0.8)',  // Dark backdrop for ticks
+                            color: '#fff',  // White ticks for contrast
+                            font: { size: 14, weight: 'bold' }  // Orbitron font for ticks
                         }
                     }
                 },
+                plugins: {
+                    legend: {
+                        labels: {
+                            color: '#fff',  // White text for the legend
+                            font: { size: 16, weight: 'bold' }  // Orbitron font for legend
+                        }
+                    }
+                }
             }
         });
+    };
+
+    const tileContent = ({ date, view }) => {
+        if (view === 'month') {
+            const formattedDate = date.toISOString().split('T')[0];
+            const tasks = userStats.groupedTasksByDate[formattedDate] || [];
+            return (
+                <div className="task-dots">
+                    {tasks.map((task, index) => (
+                        <span key={index} className="task-dot" title={task.task}></span>
+                    ))}
+                </div>
+            );
+        }
+    };
+
+    // New function to filter tasks for the selected date
+    const getTasksForSelectedDate = () => {
+        const formattedDate = selectedDate.toISOString().split('T')[0];
+        return userStats.groupedTasksByDate[formattedDate] || [];
     };
 
     return (
@@ -109,7 +132,6 @@ const Dashboard = () => {
             <img src={portalImage} alt="Bottom portal" className="portal-image bottom-image" />
             <img src={avatarImage} alt="Avatar" className="avatar-image" />
 
-            {/* Display user stats */}
             <div className="stats-box">
                 <div className="stats-content">
                     <h2>Stats</h2>
@@ -122,7 +144,6 @@ const Dashboard = () => {
                 </div>
             </div>
 
-            {/* Player Stats */}
             <div className="level-info-box">
                 <div className="stats-content">
                     <h2>Player Stats</h2>
@@ -133,14 +154,22 @@ const Dashboard = () => {
                 </div>
             </div>
 
-            {/* Radar Chart */}
+            <div className="level-container">
+                <div className="level-circle">{userStats.level}</div>
+                <div className="level-bar">
+                    <div className="level-progress" style={{ width: `${userStats.progressToNextLevel}%` }}></div>
+                </div>
+                <div className="xp-info">
+                    Current XP: <span className="xp-value">{userStats.totalXP}</span>
+                </div>
+            </div>
+
             <div className="chart-container">
                 <div className="radar-chart-container">
                     <canvas id="radarChart" ref={chartRef}></canvas>
                 </div>
             </div>
 
-            {/* Leaderboard */}
             <div className="leaderboard-box">
                 <div className="leaderboard-title">Leaderboard</div>
                 <ul className="leaderboard-list">
@@ -149,6 +178,27 @@ const Dashboard = () => {
                             <span className="leaderboard-rank">{index + 1}</span>
                             <span className="leaderboard-name">{user.username}</span>
                             <span className="leaderboard-score">{user.totalXP} XP</span>
+                        </li>
+                    ))}
+                </ul>
+            </div>
+
+            <div className="calendar-container">
+                <Calendar
+                    onChange={setSelectedDate}
+                    value={selectedDate}
+                    tileContent={tileContent}
+                />
+            </div>
+
+            {/* Display tasks for the selected date */}
+            {/* Display tasks for the selected date */}
+            <div className="task-list-for-date">
+                <h3>Tasks on {selectedDate.toDateString()}</h3>
+                <ul>
+                    {getTasksForSelectedDate().map((task, index) => (
+                        <li key={index}>
+                            <span>{task.task}</span> - <em>{task.completed ? 'Completed' : 'Incomplete'}</em>
                         </li>
                     ))}
                 </ul>

@@ -9,8 +9,14 @@ html, body {
     height: 100%;
     font-family: 'Orbitron', Arial, sans-serif; /* Use a futuristic font like Orbitron */
     background-color: #000; /* Dark background for a cyberpunk feel */
+    scroll-behavior: smooth; /* Smooth scrolling */
 }
 
+body::after {
+    content: "";
+    display: block;
+    height: 50px; /* Adjust the spacing at the bottom */
+}
 
 /* Main section and backgrounds */
 .main-section {
@@ -104,7 +110,7 @@ html, body {
     font-size: 1.5rem; /* Increased font size for title */
     margin: 0; /* Remove default margin */
     text-align: center; /* Center align the title */
-    text-shadow: 0 0 20px #0ff; /* Glowing neon effect */
+    text-shadow: 0 0 10px #0ff, 0 0 20px #f0f; /* Neon glow effect */
 }
 
 .stats-content p {
@@ -198,66 +204,69 @@ html, body {
     }
 }
 
-/* Level container */
+/* Level Container */
 .level-container {
     display: flex;
     align-items: center; /* Aligns items vertically */
-    position: relative;
-    margin-top: 20px; /* Adjust space above the level bar */
     justify-content: flex-end; /* Align items to the right */
+    position: absolute;
+    top: 80px; /* Distance from the top */
+    right: -790px; /* Distance from the right */
+    background-color: rgba(70, 70, 70, 0); /* Semi-transparent background */
+    padding: 10px;
+    border-radius: 10px;
+    text-align: center;
+    color: #fff;
+    z-index: 100; /* Ensures it stays above other elements */
 }
 
-
-/* Level circle */
+/* Level Circle */
 .level-circle {
-    width: 60px; /* Increased size */
-    height: 60px; /* Increased size */
-    border-radius: 50%; /* Make it circular */
-    background: rgba(0, 0, 0, 0); /* Match the stats box background color */
-    border: 3px solid #0ff; /* Neon cyan border */
+    width: 150px; /* Circle size */
+    height: 60px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0);
+    border: 3px solid #0ff;
     display: flex;
     justify-content: center;
     align-items: center;
-    color: #fff; /* Change text color to white */
-    font-size: 1.8rem; /* Increase font size */
-    text-shadow: 0 0 20px #0ff, 0 0 20px #f0f; /* Neon glow effect */
-    position: absolute; /* Absolute positioning */
-    top: -400px; /* Shift up slightly */
-    right: 280px; /* Shift right slightly */
-    animation: glitch 1s infinite; /* Apply glitch animation to the circle number */
-    filter: drop-shadow(0 0 15px rgba(0, 255, 255, 0.8)); /* Neon glow effect */
+    color: #0ff;
+    font-size: 1.8rem;
+    font-weight: bold;
+    text-shadow: 0 0 20px #0ff, 0 0 20px #f0f;
+    animation: glitch 1s infinite;
+    filter: drop-shadow(0 0 15px rgba(0, 255, 255, 0.8));
 }
 
-/* Level bar */
+
+/* Level Bar */
 .level-bar {
-    width: 200px; /* Set a fixed width for the progress bar */
-    height: 30px; /* Height of the progress bar */
-    background: #00000000; /* Black background for the bar */
+    width: 920px; /* Set a fixed width for the progress bar */
+    height: 40px; /* Height of the progress bar */
+    background: rgba(70, 70, 70, 0); /* Background color for the bar */
+    border-radius: 10px; /* Rounded corners */
+    overflow: hidden; /* Hide overflow */
+    margin: 0 10px; /* Add margin around the bar */
+    box-shadow: 0 0 20px #0ff, 0 0 30px #0ff; /* Neon glow effect */
+}
+
+/* Level Progress */
+.level-progress {
+    height: 100%; /* Full height */
+    background: linear-gradient(90deg, #4e0f5e, #7d12ff); /* Purple gradient for progress */
+    width: 500%; /* Progress percentage */
+    transition: width 0.3s ease;
     border-radius: 10px; /* Rounded corners */
     position: relative;
-    overflow: hidden; /* Hide overflow */
-    margin-right: 70px; /* Add margin to right for spacing */
-    margin-top: -750px; /* Move the bar upwards; adjust value as needed */
-    border: 3px solid #0ff; /* Add highlighted border */
-    box-shadow: 0 0 20px #0ff, 0 0 30px #0ff; /* Neon glow effect for the level bar */
 }
 
-
-
-
-/* Level progress */
-.level-progress {
-    width: 50%; /* Change this to represent progress (50% here) */
-    height: 100%; /* Full height */
-    background: linear-gradient(90deg, #4e0f5e, #7d12ff); /* Darker purple gradient for progress */
-    animation: glitch 1s infinite; /* Glitch effect */
-    position: absolute;
-    top: 0;
-    left: 0;
-    border-radius: 10px; /* Rounded corners for progress */
+/* XP Info */
+.xp-info {
+    font-size: 14px;
+    margin-top: 5px;
 }
 
-/* Glitch animation for both level circle and progress */
+/* Glitch Animation for both level circle and progress */
 @keyframes glitch {
     0% { 
         text-shadow: 
@@ -304,11 +313,11 @@ html, body {
     }
 }
 
-/* Responsive adjustments */
+/* Responsive Adjustments */
 @media (max-width: 768px) {
     .level-circle {
         width: 40px; /* Smaller circle for mobile */
-        height: 40px; /* Smaller circle for mobile */
+        height: 40px;
         font-size: 1.2rem; /* Smaller font size */
     }
     .level-bar {
@@ -357,30 +366,33 @@ html, body {
 /* Radar chart container */
 .chart-container {
     position: absolute;
-    top: 52%; /* Adjust to place over the bar image */
+    top: 55%; /* Adjust to place over the bar image */
     left: 4%; /* Adjust spacing from the left side */
     width: 350px;
-    height: 320px;
+    height: 290px;
     background: rgba(70, 70, 70, 0); /* Dark semi-transparent background */
     border: 3px solid #0ff; /* Neon cyan border for cyberpunk effect */
     box-shadow: 0 0 20px #0ff, 0 0 20px #f0f; /* Neon glow effect with purple */
     border-radius: 10px;
     padding: 20px;
+    display: flex;
+    align-items: center; /* Vertically center content */
+    justify-content: center; /* Horizontally center content */
     z-index: 3; /* Ensure it is above the bar image */
 }
 
-/* Style for radar chart labels */
+/* Style for radar chart canvas */
 .radar-chart-container canvas {
-    /* Ensure the canvas fits within the container */
     width: 100% !important;
     height: auto !important; /* Maintain aspect ratio */
 }
 
+
 /* Level info box with neon, glitch, and cyberpunk styling */
 .level-info-box {
     position: absolute;
-    top: 27%; /* Adjust to place over the bar image */
-    left: 73%; /* Adjust spacing from the left side */
+    top: 23%; /* Adjust to place over the bar image */
+    left: 70%; /* Adjust spacing from the left side */
     width: 350px;
     height: auto;
     background: rgba(70, 70, 70, 0); /* Dark semi-transparent background */
@@ -400,8 +412,8 @@ html, body {
 .xp-info {
     color: #fff; /* Change text color to white */
     font-size: 1.0rem; /* Adjust font size as needed */
-    margin-top: -350px; /* Negative margin to move up */
-    margin-left: 82%;
+    margin-top: -690px; /* Negative margin to move up */
+    margin-left: 60%;
     text-shadow: 0 0 5px #0ff, 0 0 10px #0ff; /* Neon glow effect */
 }
 
@@ -430,8 +442,8 @@ html, body {
 /* Leaderboard box styling */
 .leaderboard-box {
     position: absolute;
-    top: 115%; /* Position below other boxes */
-    left: 6%;
+    top: 105%; /* Position below other boxes */
+    left: 23%;
     transform: translate(-50%, 100%); /* Start offscreen */
     width: 500px;
     background: rgba(0, 0, 0, 0.8); /* Dark semi-transparent background */
@@ -465,6 +477,7 @@ html, body {
     font-size: 1.5rem;
     text-shadow: 0 0 10px #0ff, 0 0 20px #f0f; /* Neon glow effect */
     margin-bottom: 10px;
+    color:#0ff
 }
 
 .leaderboard-list {
@@ -498,116 +511,227 @@ html, body {
     color: #0ff; /* Neon cyan for scores */
 }
 
-    /* Heatmap heading styling */
-    .heatmap-heading {
-        position: absolute;
-        top: 50%; /* Align above the heatmap box */
-        left: 500px;
-        transform: translate(-50%, -100%);
-        color: #c55aff;
-        font-size: 18px;
-        font-weight: bold;
-        text-align: center;
-        text-shadow: 0 0 10px #c55aff, 0 0 20px #f0f; /* Neon glow effect */
-        z-index: 3;
-        opacity: 0;
-        animation: slideIn 1s forwards;
-        animation-delay: 1.2s; /* Slide in before the heatmap */
-    }
-
-    .heatmap-container {
-        position: absolute; /* Use absolute positioning */
-        top: 110%; /* Change this value to the desired position */
-        left: 70%; /* Center horizontally */
-        transform: translate(-50%, 0);
-        width: 700px;
-        z-index: 3;
-        opacity: 1; /* Make visible */
-    }
-    
-    /* Month navigation styling */
-    .heatmap-navigation {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        margin-bottom: 8px;
-        font-size: 18px;
-        font-weight: bold;
-        color: #ffffff;
-        text-shadow: 0 0 10px #0ff, 0 0 20px #f0f;
-    }
-
-    .arrow {
-        cursor: pointer;
-        margin: 0 20px;
-        color: #ffffff;
-        text-shadow: 0 0 10px #0ff, 0 0 20px #f0f;
-    }
-
-    .month-label {
-        color: #ffffff;
-        text-align: center;
-    }
-
- /* Heatmap box styling */
-.heatmap-box {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr); /* 7 columns for days of the week */
-    grid-template-rows: repeat(6, 1fr) auto; /* Four rows of equal height, last row auto */
-    gap: 4px;
-    width: 500px; /* Adjust width as necessary */
-    height: 305px; /* Adjust height as necessary */
-    background: rgba(0, 0, 0, 0.8);
-    border: 3px solid #0ff;
-    box-shadow: 0 0 20px #0ff, 0 0 20px #f0f;
-    border-radius: 10px;
-    padding: 10px;
-    margin-left: auto;
+.calendar-container {
+    position: absolute;
+    top: 103%; 
+    left: 74%; 
+    transform: translate(-50%, 0);
+    width: 600px;
+    z-index: 3;
+    opacity: 1;
 }
 
+/* Dark theme background with cyberpunk styling */
+.react-calendar {
+    background-color: rgba(70,70,70,0); /* Dark, semi-transparent for a futuristic feel */
+    border: 3px solid #0ff; /* Neon cyan border */
+    border-radius: 10px;
+    box-shadow: 0 0 20px #0ff, 0 0 30px #f0f; /* Glowing effect */
+    color: #fff;
+    font-family: 'Orbitron', sans-serif;
+    width: 100%
+}
+
+/* Weekday names (Sun, Mon, etc.) styling */
+.react-calendar__month-view__weekdays {
+    text-transform: uppercase;
+    font-weight: bold;
+    color: #fff;
+    text-shadow: 0 0 8px #0ff, 0 0 12px #f0f;
+}
+
+/* Center and style weekday names */
+.react-calendar__month-view__weekdays__weekday {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 8px 0;
+}
+
+/* Day cell styling with cyberpunk colors */
+.react-calendar__tile {
+    background-color: rgba(70, 70, 70, 0); /* Deep purple background */
+    color: #ffffff;
+    border: none; /* Removed the grid line border */
+    border-radius: 8px;
+    padding: 12px 0;
+    margin: 4px;
+    text-align: center;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Highlight for current day */
+.react-calendar__tile--now {
+    background-color: rgba(255, 0, 255, 0.8);
+    box-shadow: 0 0 15px #f0f, 0 0 25px #0ff;
+}
+
+/* Hover effect with purple neon glow */
+/* Hover effect with purple neon glow */
+.react-calendar__tile:hover {
+    background-color: #732acb;
+    color: black; /* Ensure text color stays consistent */
+}
+
+
+/* Disabled tiles styling */
+.react-calendar__tile--inactive {
+    background-color: rgba(70, 70, 70, 0);
+    color: rgba(70, 70, 70, 0);
+    box-shadow: none;
+}
+
+/* Navigation arrows with purple neon glow effect */
+.react-calendar__navigation button {
+    color: #ffffff;
+    background-color: #3e216b;
+    border-radius: 8px;
+    padding: 8px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin: 2px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 0 8px #0ff, 0 0 15px #8e44ad; /* Purple glow */
+}
+
+.react-calendar__navigation button:hover {
+    background-color: #732acb;
+    color: black; /* Ensure text color stays consistent */
     
-    
-    /* Day label styling */
-    .day-label {
-        color: #ffffff;
-        font-weight: bold;
-        text-align: center;
+}
+
+/* Task indicator dots with purple glow */
+.task-dots {
+    display: flex;
+    justify-content: center;
+    margin-top: 4px;
+}
+
+.task-dot {
+    width: 6px;
+    height: 6px;
+    background-color: #0ff;
+    border-radius: 50%;
+    margin: 0 2px;
+    box-shadow: 0 0 10px #0ff, 0 0 15px #8e44ad; /* Neon purple glow for task dots */
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .calendar-container {
+        width: 90%;
+        left: 50%;
     }
 
-    /* Heatmap cell styling */
-    .heatmap-cell {
-        position: relative;
-        width: 100%;
-        height: 100%;
-        border-radius: 3px;
-        box-shadow: 0 0 5px rgba(197, 90, 255, 0.5);
-        background-color: #c55aff;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-size: 14px;
-        color: white; /* Change text color for contrast */
+    .react-calendar {
+        font-size: 0.9rem;
+    }
+}
+
+/* Task List Container with Cyberpunk Style */
+.task-list-for-date {
+    position: absolute;
+    bottom: 5%; /* Aligns near the bottom */
+    right: 3%; /* Aligns near the right edge */
+    width: 350px;
+    max-height: 250px; /* Set a fixed height to show only two tasks */
+    overflow-y: auto; /* Adds scroll when tasks exceed the max height */
+    background: rgba(70, 70, 70, 0); /* Dark semi-transparent background */
+    box-shadow: 0 0 20px #0ff, 0 0 20px #f0f; /* Neon glow effect with purple */
+    padding: 20px;
+    z-index: 3;
+    border-radius: 10px;
+    border: 3px solid #0ff; /* Stronger neon blue border */
+}
+
+/* Task Title and List */
+.task-list-for-date h3 {
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+    text-shadow: 0 0 10px #0ff, 0 0 20px #f0f; /* Neon glow effect */
+    font-family: 'Orbitron', sans-serif;
+    text-align: center;
+    color: #0ff;
+}
+
+.task-list-for-date ul {
+    list-style-type: none; /* Removes bullet points */
+    padding: 0;
+    margin: 0;
+}
+
+.task-list-for-date li {
+    font-size: 1rem;
+    color: #0ff;
+    text-shadow: 0 0 5px #0ff, 0 0 10px #f0f; /* Neon text glow for list items */
+    margin: 10px 0;
+    display: flex;
+    justify-content: space-between; /* Aligns task text and completion status */
+    padding: 8px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2); /* Divider between tasks */
+    animation: glitch 1.5s infinite;
+}
+
+.task-list-for-date li span {
+    font-family: 'Orbitron', sans-serif;
+}
+
+.task-list-for-date li em {
+    font-style: normal;
+    color: #0ff;
+}
+
+/* Glitch animation for cyberpunk effect */
+@keyframes glitch {
+    0%, 100% {
+        text-shadow: 0 0 5px #0ff, 0 0 10px #f0f;
+    }
+    20% {
+        text-shadow: 1px 1px 0 rgba(255, 0, 0, 0.6), 0 0 5px #0ff, 0 0 10px #f0f;
+    }
+    40% {
+        text-shadow: 1px -1px 0 rgba(0, 255, 0, 0.6), 0 0 5px #0ff, 0 0 10px #f0f;
+    }
+    60% {
+        text-shadow: -1px 1px 0 rgba(0, 0, 255, 0.6), 0 0 5px #0ff, 0 0 10px #f0f;
+    }
+    80% {
+        text-shadow: -1px -1px 0 rgba(255, 255, 0, 0.6), 0 0 5px #0ff, 0 0 10px #f0f;
+    }
+}
+
+/* Scrollbar styling */
+.task-list-for-date::-webkit-scrollbar {
+    width: 8px;
+}
+
+.task-list-for-date::-webkit-scrollbar-thumb {
+    background: #0ff;
+    border-radius: 4px;
+    box-shadow: 0 0 10px #0ff;
+}
+
+.task-list-for-date::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .task-list-for-date {
+        width: 250px;
+        bottom: 10%;
+        right: 10%;
     }
 
-    /* Heatmap cell intensity variations */
-    .heatmap-cell.low {
-        background-color: rgba(197, 90, 255, 0.4);
+    .task-list-for-date h3 {
+        font-size: 1.2rem;
     }
 
-    .heatmap-cell.medium {
-        background-color: rgba(197, 90, 255, 0.7);
+    .task-list-for-date li {
+        font-size: 0.9rem;
     }
-
-    .heatmap-cell.high {
-        background-color: rgba(197, 90, 255, 1);
-    }
-
-    .heatmap-cell.no {
-        background-color: rgba(204, 204, 204, 0.473);
-    }
-
-    /* Animation for sliding in */
-    @keyframes slideIn {
-        from { opacity: 0; transform: translateY(-20px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
+}
