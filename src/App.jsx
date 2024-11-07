@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Navbar from './components/Navbar';
+import About from './pages/About';
 import Dashboard from './pages/Dashboard';
 import Friend from './pages/Friend';
 import Login from './pages/Login';
@@ -19,6 +20,7 @@ function App() {
       <BrowserRouter>
         <Navbar userName={userName} setUserName={setUserName} />
         <Routes>
+          <Route path='/' element={<About />} />
           <Route path="/login" element={<Login setUserName={setUserName} setUserId={setUserId} />} /> {/* Pass setUserId to Login */}
           <Route path="/signup" element={<SignUp />} />
           <Route path="/task" element={<Task />} />

@@ -34,7 +34,7 @@ body::after {
     left: 0;
     right: 0;
     height: 60vh; /* Full height of the viewport */
-    background-image: url('../images/dashback2.png'); /* Initial background */
+    background-image: url('../images/dashback2.png') no-repeat center center; /* Initial background */
     background-size: cover;
     background-position: center 1%; /* Move this up by changing the percentage */
     transition: opacity 0.5s ease; /* Smooth transition for opacity */
@@ -56,6 +56,41 @@ body::after {
     position: absolute;
 }
 
+.avatar-image {
+    width: 350px; /* Adjust the size of the avatar */
+    height: auto;
+    display: block;
+    margin: 0 auto;
+    position: relative;
+    top: 70px; /* Adjust to move the avatar above the portal */
+        
+    /* Glowing effect with drop-shadow */
+    filter: drop-shadow(0 0 20px rgba(255, 105, 180, 0.8)); /* Pink-ish glow */
+    animation: avatar-glow 1.5s infinite alternate, float 3s infinite alternate; /* Glowing and floating animation */
+}
+
+/* Keyframes for glowing pulse */
+@keyframes avatar-glow {
+    from {
+        filter: drop-shadow(0 0 10px rgba(255, 105, 180, 0.5));
+    }
+    to {
+        filter: drop-shadow(0 0 30px rgba(255, 105, 180, 1));
+    }
+}
+
+/* Keyframes for floating effect */
+@keyframes float {
+    0% {
+        transform: translateY(0); /* Original position */
+    }
+    50% {
+        transform: translateY(-10px); /* Move up */
+    }
+    100% {
+        transform: translateY(0); /* Return to original position */
+    }
+}
 
 .bottom-image {
     bottom: -5%;
@@ -325,44 +360,6 @@ body::after {
     }
 }
 
-.avatar-image {
-    width: 350px; /* Adjust the size of the avatar */
-    height: auto;
-    display: block;
-    margin: 0 auto;
-    position: relative;
-    top: 125px; /* Adjust to move the avatar above the portal */
-    z-index: 10; /* Keep the avatar above the portal image */
-    
-    /* Glowing effect with drop-shadow */
-    filter: drop-shadow(0 0 20px rgba(255, 105, 180, 0.8)); /* Pink-ish glow */
-    animation: avatar-glow 1.5s infinite alternate, float 3s infinite alternate; /* Glowing and floating animation */
-}
-
-/* Keyframes for glowing pulse */
-@keyframes avatar-glow {
-    from {
-        filter: drop-shadow(0 0 10px rgba(255, 105, 180, 0.5));
-    }
-    to {
-        filter: drop-shadow(0 0 30px rgba(255, 105, 180, 1));
-    }
-}
-
-/* Keyframes for floating effect */
-@keyframes float {
-    0% {
-        transform: translateY(0); /* Original position */
-    }
-    50% {
-        transform: translateY(-10px); /* Move up */
-    }
-    100% {
-        transform: translateY(0); /* Return to original position */
-    }
-}
-
-/* Radar chart container */
 /* Radar chart container */
 .chart-container {
     position: absolute;
