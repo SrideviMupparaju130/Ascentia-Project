@@ -119,7 +119,7 @@ function Quest() {
                 <div className="popup-overlay">
                     <div className="popup-content">
                         <button className="popup-close-btn" onClick={closeSubmitPopup}>✖</button>
-                        <h3>Complete Task</h3>
+                        <h3>Complete Quest</h3>
                         <div className="form-group">
                             <label htmlFor="summary">Task Summary:</label>
                             <textarea
