@@ -5,6 +5,9 @@ function Quest() {
     const [quests, setQuests] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [isSubmitPopupVisible, setIsSubmitPopupVisible] = useState(false);
+    const [selectedQuestId, setSelectedQuestId] = useState(null);
+    const [summary, setSummary] = useState('');
 
     useEffect(() => {
         const fetchQuests = async () => {
@@ -34,11 +37,22 @@ function Quest() {
         fetchQuests();
     }, []);
 
-    const handleCompletionChange = async (questId) => {
-        const updatedQuests = quests.map(quest =>
-            quest._id === questId ? { ...quest, completed: true } : quest
-        );
-        setQuests(updatedQuests);
+    const handleCompletionRequest = (questId) => {
+        setSelectedQuestId(questId);
+        setIsSubmitPopupVisible(true);
+    };
+
+    const closeSubmitPopup = () => {
+        setIsSubmitPopupVisible(false);
+        setSelectedQuestId(null);
+        setSummary('');
+    };
+
+    const handleSubmitCompletion = async () => {
+        if (!summary.trim()) {
+            alert("Please enter a summary before submitting.");
+            return;
+        }
 
         try {
             const response = await fetch('http://localhost:5500/api/quests', {
@@ -47,7 +61,7 @@ function Quest() {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${localStorage.getItem('token')}`,
                 },
-                body: JSON.stringify({ questId }),
+                body: JSON.stringify({ questId: selectedQuestId, summary }),
             });
 
             if (!response.ok) {
@@ -56,8 +70,9 @@ function Quest() {
 
             const updatedQuest = await response.json();
             setQuests(quests.map(quest =>
-                quest._id === questId ? { ...quest, completed: updatedQuest.quest.completed } : quest
+                quest._id === selectedQuestId ? { ...quest, completed: updatedQuest.quest.completed } : quest
             ));
+            closeSubmitPopup();
         } catch (error) {
             console.error('Error updating quest completion:', error);
             alert('An error occurred while updating the quest status. Please try again.');
@@ -86,7 +101,7 @@ function Quest() {
                                         <input
                                             type="checkbox"
                                             checked={quest.completed}
-                                            onChange={() => handleCompletionChange(quest._id)}
+                                            onChange={() => handleCompletionRequest(quest._id)}
                                             disabled={quest.completed}
                                         />
                                         <span>{quest.Challenge}</span>
@@ -98,6 +113,27 @@ function Quest() {
                     </div>
                 )}
             </div>
+
+            {/* Task Completion Summary Popup */}
+            {isSubmitPopupVisible && (
+                <div className="popup-overlay">
+                    <div className="popup-content">
+                        <button className="popup-close-btn" onClick={closeSubmitPopup}>✖</button>
+                        <h3>Complete Task</h3>
+                        <div className="form-group">
+                            <label htmlFor="summary">Task Summary:</label>
+                            <textarea
+                                id="summary"
+                                value={summary}
+                                onChange={(e) => setSummary(e.target.value)}
+                                placeholder="Enter a brief summary..."
+                                required
+                            />
+                        </div>
+                        <button className="btn" onClick={handleSubmitCompletion}>Submit</button>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
