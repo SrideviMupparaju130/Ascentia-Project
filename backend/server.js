@@ -9,6 +9,7 @@ const taskRoutes = require('./routes/taskRoutes'); // Task routes added
 const questRoutes = require('./routes/questRoutes'); 
 const friendRoutes = require('./routes/friendRoutes');
 const dashboardRotes = require('./routes/dashboardRoutes');
+const chatbotRoutes = require('./routes/chatbotRoutes');
 
 const app = express();
 const port = process.env.PORT || 5500; // Use port from .env or default to 5500
@@ -63,6 +64,7 @@ app.use('/api/tasks', taskRoutes); // Task routes
 app.use('/api/quests',questRoutes);
 app.use('/api/friends',friendRoutes);
 app.use('/api/dashboard',dashboardRotes);
+app.use('/api/chatbot', chatbotRoutes); 
 
 // Global error handling middleware
 app.use((err, req, res, next) => {
