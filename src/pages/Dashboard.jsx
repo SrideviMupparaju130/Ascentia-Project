@@ -55,9 +55,18 @@ const Dashboard = () => {
         fetchData();
     }, []);
 
+    const chartInstanceRef = useRef(null); // Store chart instance
+
     const updateRadarChart = (categoryXP) => {
+        if (!chartRef.current) return;
+
+        // Destroy the previous chart if it exists
+        if (chartInstanceRef.current) {
+            chartInstanceRef.current.destroy();
+        }
+
         const ctx = chartRef.current.getContext('2d');
-        new Chart(ctx, {
+        chartInstanceRef.current = new Chart(ctx, {
             type: 'radar',
             data: {
                 labels: ['Career', 'Health', 'Self-Care', 'Intellectual', 'Finance'],
@@ -70,42 +79,51 @@ const Dashboard = () => {
                         categoryXP.Intellectual,
                         categoryXP.Finance
                     ],
-                    backgroundColor: 'rgba(70, 70, 70, 0)',  // Semi-transparent purple
-                    borderColor: '#0ff',  // Neon cyan border
-                    pointBackgroundColor: '#f0f',  // Neon pink for points
-                    pointBorderColor: '#fff',  // White border for points
-                    pointHoverBackgroundColor: '#ff0',  // Neon yellow on hover
-                    pointHoverBorderColor: '#0ff'  // Neon cyan on hover
+                    backgroundColor: 'rgba(70, 70, 70, 0)',  
+                    borderColor: '#0ff',  
+                    pointBackgroundColor: '#f0f',  
+                    pointBorderColor: '#fff',  
+                    pointHoverBackgroundColor: '#ff0',  
+                    pointHoverBorderColor: '#0ff'  
                 }]
             },
             options: {
-                elements: { line: { borderWidth: 3, tension: 0.4 } }, // Cyberpunk style with smooth lines
+                elements: { line: { borderWidth: 3, tension: 0.4 } }, 
                 scales: {
                     r: {
-                        angleLines: { color: '#f0f' },  // Neon pink for angle lines
-                        grid: { color: 'rgba(255, 0, 255, 0.3)' },  // Semi-transparent grid in purple
+                        angleLines: { color: '#f0f' },
+                        grid: { color: 'rgba(255, 0, 255, 0.3)' },
                         pointLabels: {
-                            color: '#0ff',  // Neon cyan for labels
-                            font: { size: 18, weight: 'bold' }  // Orbitron font and cyberpunk styling
+                            color: '#0ff',
+                            font: { size: 18, weight: 'bold' }
                         },
                         ticks: {
-                            backdropColor: 'rgba(0, 0, 0, 0.8)',  // Dark backdrop for ticks
-                            color: '#fff',  // White ticks for contrast
-                            font: { size: 14, weight: 'bold' }  // Orbitron font for ticks
+                            backdropColor: 'rgba(0, 0, 0, 0.8)',
+                            color: '#fff',
+                            font: { size: 14, weight: 'bold' }
                         }
                     }
                 },
                 plugins: {
                     legend: {
                         labels: {
-                            color: '#fff',  // White text for the legend
-                            font: { size: 16, weight: 'bold' }  // Orbitron font for legend
+                            color: '#fff',
+                            font: { size: 16, weight: 'bold' }
                         }
                     }
                 }
             }
         });
     };
+
+    useEffect(() => {
+        return () => {
+            // Cleanup function to destroy chart on unmount
+            if (chartInstanceRef.current) {
+                chartInstanceRef.current.destroy();
+            }
+        };
+    }, []);
 
     const tileContent = ({ date, view }) => {
         if (view === 'month') {
