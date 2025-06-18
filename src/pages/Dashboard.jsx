@@ -1,5 +1,5 @@
 import { Chart, Filler, LineElement, PointElement, RadarController, RadialLinearScale } from 'chart.js';
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import '../assets/css/Dashboard.css';
@@ -7,6 +7,14 @@ import avatarImage from '../assets/images/girl.png';
 import portalImage from '../assets/images/por.png';
 
 Chart.register(RadarController, RadialLinearScale, PointElement, LineElement, Filler);
+
+// NEW: Helper function to format date to YYYY-MM-DD in the local timezone
+const formatDateToLocalYYYYMMDD = (date) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+};
 
 const Dashboard = () => {
     const [userStats, setUserStats] = useState({
@@ -55,12 +63,11 @@ const Dashboard = () => {
         fetchData();
     }, []);
 
-    const chartInstanceRef = useRef(null); // Store chart instance
+    const chartInstanceRef = useRef(null);
 
     const updateRadarChart = (categoryXP) => {
         if (!chartRef.current) return;
 
-        // Destroy the previous chart if it exists
         if (chartInstanceRef.current) {
             chartInstanceRef.current.destroy();
         }
@@ -118,7 +125,6 @@ const Dashboard = () => {
 
     useEffect(() => {
         return () => {
-            // Cleanup function to destroy chart on unmount
             if (chartInstanceRef.current) {
                 chartInstanceRef.current.destroy();
             }
@@ -127,7 +133,8 @@ const Dashboard = () => {
 
     const tileContent = ({ date, view }) => {
         if (view === 'month') {
-            const formattedDate = date.toISOString().split('T')[0];
+            // CHANGED: Use the new helper function
+            const formattedDate = formatDateToLocalYYYYMMDD(date);
             const tasks = userStats.groupedTasksByDate[formattedDate] || [];
             return (
                 <div className="task-dots">
@@ -139,9 +146,9 @@ const Dashboard = () => {
         }
     };
 
-    // New function to filter tasks for the selected date
     const getTasksForSelectedDate = () => {
-        const formattedDate = selectedDate.toISOString().split('T')[0];
+        // CHANGED: Use the new helper function
+        const formattedDate = formatDateToLocalYYYYMMDD(selectedDate);
         return userStats.groupedTasksByDate[formattedDate] || [];
     };
 
@@ -208,17 +215,19 @@ const Dashboard = () => {
                     tileContent={tileContent}
                 />
             </div>
-
-            {/* Display tasks for the selected date */}
-            {/* Display tasks for the selected date */}
+            
             <div className="task-list-for-date">
                 <h3>Tasks on {selectedDate.toDateString()}</h3>
                 <ul>
-                    {getTasksForSelectedDate().map((task, index) => (
-                        <li key={index}>
-                            <span>{task.task}</span> - <em>{task.completed ? 'Completed' : 'Incomplete'}</em>
-                        </li>
-                    ))}
+                    {getTasksForSelectedDate().length > 0 ? (
+                        getTasksForSelectedDate().map((task, index) => (
+                            <li key={index}>
+                                <span>{task.task}</span> - <em>{task.completed ? 'Completed' : 'Incomplete'}</em>
+                            </li>
+                        ))
+                    ) : (
+                        <li>No tasks for this day.</li>
+                    )}
                 </ul>
             </div>
         </div>

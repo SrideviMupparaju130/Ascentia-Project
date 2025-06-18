@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../assets/css/Task.css'; // Import custom CSS for Task page
 
@@ -9,13 +9,46 @@ function Task() {
     const [errorMessage, setErrorMessage] = useState('');
     const [isPopupVisible, setIsPopupVisible] = useState(false);
     const [selectedCategory, setSelectedCategory] = useState('');
-    const [tasks, setTasks] = useState([]);
-    const [loading, setLoading] = useState(false);
+    const [tasks, setTasks] = useState([]); // Tasks for category popup
+    const [loading, setLoading] = useState(false); // For category popup
     const [popupError, setPopupError] = useState('');
-    const [isSubmitPopupVisible, setIsSubmitPopupVisible] = useState(false);
-    const [taskToSubmit, setTaskToSubmit] = useState(null);
-    const [summary, setSummary] = useState('');
-    const [file, setFile] = useState(null);
+
+    // New state for view mode and date view
+    const [viewMode, setViewMode] = useState('category'); // 'category' or 'date'
+    const [allTasks, setAllTasks] = useState([]); // All tasks for date view
+    const [dateViewLoading, setDateViewLoading] = useState(false);
+    const [dateViewError, setDateViewError] = useState('');
+
+    // Fetch all tasks when switching to date view
+    useEffect(() => {
+        const fetchAllTasks = async () => {
+            if (viewMode === 'date') {
+                setDateViewLoading(true);
+                setDateViewError('');
+                try {
+                    const response = await fetch('http://localhost:5500/api/tasks', {
+                        headers: {
+                            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                        },
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch tasks.');
+                    }
+                    const data = await response.json();
+                    setAllTasks(data);
+                } catch (error) {
+                    console.error('Error fetching all tasks:', error);
+                    setDateViewError(error.message);
+                } finally {
+                    setDateViewLoading(false);
+                }
+            }
+        };
+
+        fetchAllTasks();
+    }, [viewMode]);
+
 
     const toggleFormVisibility = () => {
         setIsFormVisible(!isFormVisible);
@@ -41,7 +74,8 @@ function Task() {
             }
 
             const data = await response.json();
-            setTasks(data); // Assuming the API returns an array of tasks directly
+            const sortedTasks = data.sort((a, b) => new Date(a.date) - new Date(b.date));
+            setTasks(sortedTasks); // Assuming the API returns an array of tasks directly
         } catch (error) {
             console.error('Error fetching tasks:', error);
             setPopupError(error.message);
@@ -58,45 +92,17 @@ function Task() {
         setPopupError('');
     };
 
-    // Open summary and file submission popup
-    const openSubmitPopup = (task) => {
-        // Skip popup if task has Pomodoro enabled
-        if (task.pomodoro) {
-            navigate('/pomodoro');
-            handleTaskCompletion(task._id, task.completed); // Mark as completed after one Pomodoro cycle
-        } else {
-            setIsSubmitPopupVisible(true);
-            setTaskToSubmit(task);
-        }
-    };
-
-    // Close summary and file submission popup
-    const closeSubmitPopup = () => {
-        setIsSubmitPopupVisible(false);
-        setTaskToSubmit(null);
-        setSummary('');
-        setFile(null);
-    };
-
-    // Handle task completion submission with summary and file
-    const handleSubmitCompletion = async () => {
-        if (!summary) {
-            alert('Please provide a summary and upload a file.');
-            return;
-        }
-
-        closeSubmitPopup(); // Close the popup after validation
-        handleTaskCompletion(taskToSubmit._id, taskToSubmit.completed); // Complete the task
-    };
-
     const handleTaskCompletion = async (taskId, currentStatus) => {
-        try {
-            const updatedTasks = tasks.map(task =>
+        const toggleCompletion = (taskList) =>
+            taskList.map(task =>
                 task._id === taskId ? { ...task, completed: !currentStatus } : task
             );
-            
-            setTasks(updatedTasks);
 
+        // Optimistic update
+        setTasks(prev => toggleCompletion(prev));
+        setAllTasks(prev => toggleCompletion(prev));
+
+        try {
             const response = await fetch(`http://localhost:5500/api/tasks/${taskId}`, {
                 method: 'PUT',
                 headers: {
@@ -110,20 +116,24 @@ function Task() {
                 throw new Error('Failed to update task');
             }
 
-            const updatedTask = await response.json();
-            if (updatedTask.completed !== currentStatus) {
-                setTasks(tasks.map(task => 
-                    task._id === taskId ? { ...task, completed: updatedTask.completed } : task
-                ));
-            }
         } catch (error) {
             console.error('Error updating task:', error);
-            setPopupError(error.message);
-            setTasks(tasks.map(task => 
-                task._id === taskId ? { ...task, completed: currentStatus } : task
-            ));
+            // Revert optimistic update on failure
+            setTasks(tasks);
+            setAllTasks(allTasks);
+            setPopupError('Failed to update task. Please try again.');
         }
     };
+
+    // Handle checkbox click logic
+    const handleCheckboxChange = (task) => {
+        if (task.pomodoro && !task.completed) {
+            navigate('/pomodoro');
+        } else {
+            handleTaskCompletion(task._id, task.completed);
+        }
+    };
+
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -153,6 +163,10 @@ function Task() {
             const result = await response.json();
             console.log('Task added:', result);
             setSuccessMessage('Task added successfully!');
+             // Refetch all tasks if in date view to show the new task
+            if (viewMode === 'date') {
+                setAllTasks(prev => [...prev, result.task].sort((a,b) => new Date(a.date) - new Date(b.date)));
+            }
             e.target.reset();
             setIsFormVisible(false);
         } catch (error) {
@@ -165,54 +179,129 @@ function Task() {
         navigate('/pomodoro'); // Navigate to the Pomodoro page
     };
 
+    // Group tasks by date for the date view
+    const groupedTasks = useMemo(() => {
+        if (viewMode !== 'date' || allTasks.length === 0) return {};
+        
+        const groups = allTasks.reduce((acc, task) => {
+            const date = new Date(task.date).toISOString().split('T')[0];
+            if (!acc[date]) {
+                acc[date] = [];
+            }
+            acc[date].push(task);
+            return acc;
+        }, {});
+
+        // Sort dates chronologically
+        const sortedDates = Object.keys(groups).sort((a, b) => new Date(a) - new Date(b));
+        
+        const sortedGroups = {};
+        for (const date of sortedDates) {
+            sortedGroups[date] = groups[date];
+        }
+
+        return sortedGroups;
+    }, [allTasks, viewMode]);
+
 
     return (
-        <div className={isPopupVisible ? 'blur-background' : ''}>
+        <div className={isPopupVisible || isFormVisible ? 'blur-background' : ''}>
             <div className="background">
                 <div className="task-container">
-                    <h2>Focus Zones</h2>
-                    <div className="task-cards-container">
-                        {/* Career Category */}
-                        <div className="card task-card" onClick={() => handleCategoryClick('Career')}>
-                            <img src={require('../assets/images/Career.jpeg')} alt="Career" className="task-image" />
-                            <div className="card-body">
-                                <h5 className="card-title">Career</h5>
-                                <p className="card-text">Propel your professional journey with tasks that elevate skills, spark connections, and open doors to new opportunities!</p>
-                            </div>
-                        </div>
-                        {/* Health Category */}
-                        <div className="card task-card" onClick={() => handleCategoryClick('Health')}>
-                            <img src={require('../assets/images/Healthcare.jpeg')} alt="Health" className="task-image" />
-                            <div className="card-body">
-                                <h5 className="card-title">Health</h5>
-                                <p className="card-text">Stay vibrant and active with tasks that enhance your fitness, nutrition, and overall wellness, from daily workouts to balanced meal planning!</p>
-                            </div>
-                        </div>
-                        {/* Self Care Category */}
-                        <div className="card task-card" onClick={() => handleCategoryClick('Self Care')}>
-                            <img src={require('../assets/images/Selfcare.jpeg')} alt="Self Care" className="task-image" />
-                            <div className="card-body">
-                                <h5 className="card-title">Self Care</h5>
-                                <p className="card-text">Prioritize your well-being with tasks that rejuvenate your mind, body, and soul, from relaxation routines to personal reflection!</p>
-                            </div>
-                        </div>
-                        {/* Intellectual Category */}
-                        <div className="card task-card" onClick={() => handleCategoryClick('Intellectual')}>
-                            <img src={require('../assets/images/Intellectual.jpeg')} alt="Intellectual" className="task-image" />
-                            <div className="card-body">
-                                <h5 className="card-title">Intellectual</h5>
-                                <p className="card-text">Engage in tasks that challenge and expand your intellect, from learning new skills to diving into thought-provoking content!</p>
-                            </div>
-                        </div>
-                        {/* Finance Category */}
-                        <div className="card task-card" onClick={() => handleCategoryClick('Finance')}>
-                            <img src={require('../assets/images/Finance.jpeg')} alt="Finance" className="task-image" />
-                            <div className="card-body">
-                                <h5 className="card-title">Finance</h5>
-                                <p className="card-text">Manage and grow your wealth with tasks that streamline budgeting, investing, and financial planning!</p>
-                            </div>
-                        </div>
+                    <div className="view-switch">
+                        <button
+                            className={`view-btn ${viewMode === 'category' ? 'active' : ''}`}
+                            onClick={() => setViewMode('category')}
+                        >
+                            Category View
+                        </button>
+                        <button
+                            className={`view-btn ${viewMode === 'date' ? 'active' : ''}`}
+                            onClick={() => setViewMode('date')}
+                        >
+                            Date View
+                        </button>
                     </div>
+
+                    <h2>{viewMode === 'category' ? 'Focus Zones' : 'Tasks by Date'}</h2>
+
+                    {viewMode === 'category' ? (
+                        <div className="task-cards-container">
+                            {/* Career Category */}
+                            <div className="card task-card" onClick={() => handleCategoryClick('Career')}>
+                                <img src={require('../assets/images/Career.jpeg')} alt="Career" className="task-image" />
+                                <div className="card-body">
+                                    <h5 className="card-title">Career</h5>
+                                    <p className="card-text">Propel your professional journey with tasks that elevate skills, spark connections, and open doors to new opportunities!</p>
+                                </div>
+                            </div>
+                            {/* Health Category */}
+                            <div className="card task-card" onClick={() => handleCategoryClick('Health')}>
+                                <img src={require('../assets/images/Healthcare.jpeg')} alt="Health" className="task-image" />
+                                <div className="card-body">
+                                    <h5 className="card-title">Health</h5>
+                                    <p className="card-text">Stay vibrant and active with tasks that enhance your fitness, nutrition, and overall wellness, from daily workouts to balanced meal planning!</p>
+                                </div>
+                            </div>
+                            {/* Self Care Category */}
+                            <div className="card task-card" onClick={() => handleCategoryClick('Self Care')}>
+                                <img src={require('../assets/images/Selfcare.jpeg')} alt="Self Care" className="task-image" />
+                                <div className="card-body">
+                                    <h5 className="card-title">Self Care</h5>
+                                    <p className="card-text">Prioritize your well-being with tasks that rejuvenate your mind, body, and soul, from relaxation routines to personal reflection!</p>
+                                </div>
+                            </div>
+                            {/* Intellectual Category */}
+                            <div className="card task-card" onClick={() => handleCategoryClick('Intellectual')}>
+                                <img src={require('../assets/images/Intellectual.jpeg')} alt="Intellectual" className="task-image" />
+                                <div className="card-body">
+                                    <h5 className="card-title">Intellectual</h5>
+                                    <p className="card-text">Engage in tasks that challenge and expand your intellect, from learning new skills to diving into thought-provoking content!</p>
+                                </div>
+                            </div>
+                            {/* Finance Category */}
+                            <div className="card task-card" onClick={() => handleCategoryClick('Finance')}>
+                                <img src={require('../assets/images/Finance.jpeg')} alt="Finance" className="task-image" />
+                                <div className="card-body">
+                                    <h5 className="card-title">Finance</h5>
+                                    <p className="card-text">Manage and grow your wealth with tasks that streamline budgeting, investing, and financial planning!</p>
+                                </div>
+                            </div>
+                        </div>
+                    ) : (
+                        <div className="date-view-container">
+                            {dateViewLoading ? (
+                                <p>Loading tasks...</p>
+                            ) : dateViewError ? (
+                                <p className="error-message">{dateViewError}</p>
+                            ) : Object.keys(groupedTasks).length === 0 ? (
+                                <p>No tasks found. Create one to get started!</p>
+                            ) : (
+                                Object.entries(groupedTasks).map(([date, tasksForDate]) => (
+                                    <div key={date} className="date-group">
+                                        <h3>{new Date(date).toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' })}</h3>
+                                        <ul className="task-list">
+                                            {tasksForDate.map(task => (
+                                                <li key={task._id} className={task.completed ? 'completed' : ''}>
+                                                    <label htmlFor={`task-date-${task._id}`} className="task-label">
+                                                        <input
+                                                            type="checkbox"
+                                                            checked={task.completed}
+                                                            onChange={() => handleCheckboxChange(task)}
+                                                            id={`task-date-${task._id}`}
+                                                        />
+                                                        <span className="custom-checkbox"></span>
+                                                        <span className="task-name">{task.task}</span>
+                                                    </label>
+                                                    <span className={`task-category-badge ${task.type.toLowerCase().replace(' ', '-')}`}>{task.type}</span>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                ))
+                            )}
+                        </div>
+                    )}
                 </div>
             </div>
 
@@ -276,12 +365,12 @@ function Task() {
                                 <ul className="task-list">
                                     {tasks.map(task => (
                                         <li key={task._id} className={task.completed ? 'completed' : ''}>
-                                            <label htmlFor={`task-${task._id}`} className="task-label">
+                                            <label htmlFor={`task-popup-${task._id}`} className="task-label">
                                                 <input
                                                     type="checkbox"
                                                     checked={task.completed}
-                                                    onChange={() => openSubmitPopup(task)}
-                                                    id={`task-${task._id}`}
+                                                    onChange={() => handleCheckboxChange(task)}
+                                                    id={`task-popup-${task._id}`}
                                                 />
                                                 <span className="custom-checkbox"></span>
                                                 <span className="task-name">{task.task}</span>
@@ -293,34 +382,6 @@ function Task() {
                             </>
                         )}
                          <button onClick={handlePomodoroClick} className="pomodoro-btn">Go to Pomodoro</button> {/* Pomodoro Button */}
-                    </div>
-                </div>
-            )}
-            {/* Task Completion Summary Popup */}
-            {isSubmitPopupVisible && (
-                <div className="popup-overlay">
-                    <div className="popup-content">
-                        <button className="popup-close-btn" onClick={closeSubmitPopup}>✖</button>
-                        <h3>Complete Task</h3>
-                        <div className="form-group">
-                            <label htmlFor="summary">Task Summary:</label>
-                            <textarea
-                                id="summary"
-                                value={summary}
-                                onChange={(e) => setSummary(e.target.value)}
-                                placeholder="Enter a brief summary..."
-                                required
-                            />
-                        </div>
-                        <div className="form-group">
-                            <label htmlFor="file">Upload Related File:</label>
-                            <input
-                                type="file"
-                                id="file"
-                                onChange={(e) => setFile(e.target.files[0])}
-                            />
-                        </div>
-                        <button className="btn" onClick={handleSubmitCompletion}>Submit</button>
                     </div>
                 </div>
             )}
