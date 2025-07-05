@@ -42,7 +42,7 @@ body, html {
     color: white;
     border: none;
     padding: 15px 30px;
-    margin: 10px;
+    margin: -40px 10px 10px 10px;
     border-radius: 50px;
     font-size: 1.2em;
     box-shadow: 0 0 15px rgba(255, 0, 255, 0.7);

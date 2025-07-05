@@ -184,11 +184,20 @@ function Task() {
         if (viewMode !== 'date' || allTasks.length === 0) return {};
         
         const groups = allTasks.reduce((acc, task) => {
-            const date = new Date(task.date).toISOString().split('T')[0];
-            if (!acc[date]) {
-                acc[date] = [];
+            // FIX: Check for a valid task and date property before processing
+            if (task && task.date) {
+                const date = new Date(task.date);
+                // FIX: Ensure the date is valid before calling toISOString()
+                if (!isNaN(date.getTime())) {
+                    const dateKey = date.toISOString().split('T')[0];
+                    if (!acc[dateKey]) {
+                        acc[dateKey] = [];
+                    }
+                    acc[dateKey].push(task);
+                } else {
+                    console.warn('Skipping task with invalid date:', task);
+                }
             }
-            acc[date].push(task);
             return acc;
         }, {});
 

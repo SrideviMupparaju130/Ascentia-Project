@@ -6,7 +6,6 @@ const MongoStore = require('connect-mongo');
 require('dotenv').config(); // Load environment variables from .env file
 const userRoutes = require('./routes/userRoutes');
 const taskRoutes = require('./routes/taskRoutes'); // Task routes added
-const questRoutes = require('./routes/questRoutes'); 
 const friendRoutes = require('./routes/friendRoutes');
 const dashboardRotes = require('./routes/dashboardRoutes');
 const chatbotRoutes = require('./routes/chatbotRoutes');
@@ -61,7 +60,6 @@ app.use(session({
 // Routes
 app.use('/api/users', userRoutes); // User routes
 app.use('/api/tasks', taskRoutes); // Task routes
-app.use('/api/quests',questRoutes);
 app.use('/api/friends',friendRoutes);
 app.use('/api/dashboard',dashboardRotes);
 app.use('/api/chatbot', chatbotRoutes); 

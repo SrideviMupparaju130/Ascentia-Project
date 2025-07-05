@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate for navigation
 import '../assets/css/Pomodoro.css'; // Import custom CSS for Pomodoro page
 
@@ -64,10 +64,6 @@ function Pomodoro() {
         setTime(30 * 60); // Reset to work session
     };
 
-    const handleBackClick = () => {
-        navigate('/task'); // Change this to your actual task page route
-    };
-
     return (
         <div className="background">
             <div className="timer-container">
@@ -84,14 +80,6 @@ function Pomodoro() {
                         <div id="cycles">Cycles Completed: {cycles}</div>
                     </div>
                 </div>
-                <button 
-                    id="back-button" 
-                    className="control-btn" 
-                    onClick={handleBackClick} 
-                    style={{ position: 'absolute', bottom: '20px', right: '20px' }} // Style the button to position it at the corner
-                >
-                    Back to Task 
-                </button>
             </div>
         </div>
     );

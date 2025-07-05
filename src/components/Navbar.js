@@ -1,7 +1,7 @@
 import { faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import '../assets/css/Navbar.css';
 import LogoImage from '../assets/images/LOGO.png';
@@ -64,8 +64,8 @@ const Navbar = ({ userName, setUserName }) => {
                             <li className={`nav-item ${location.pathname === '/task' ? 'active' : ''}`}>
                                 <Link className="nav-link" to="/task">Task</Link>
                             </li>
-                            <li className={`nav-item ${location.pathname === '/quest' ? 'active' : ''}`}>
-                                <Link className="nav-link" to="/quest">Quest</Link>
+                            <li className={`nav-item ${location.pathname === '/pomodoro' ? 'active' : ''}`}>
+                                <Link className="nav-link" to="/pomodoro">Pomodoro</Link>
                             </li>
                             <li className={`nav-item ${location.pathname === '/friend' ? 'active' : ''}`}>
                                 <Link className="nav-link" to="/friend">Connect+</Link>
